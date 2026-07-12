@@ -11,6 +11,40 @@ Section 4) and the full Phase 2 scope from `BESBPO-BLOG-ARCH-05` Section 5:
 article rendering, division/tag archive pages, and the GitHub Pages deploy
 pipeline.
 
+## Deployment to GitHub Pages
+
+### Automatic Deployment (Recommended)
+
+This repository is configured for automatic deployment to GitHub Pages:
+
+1. **Enable GitHub Pages:**
+   - Go to repository Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: `gh-pages` (will be created automatically by the workflow)
+
+2. **Configure Custom Domain:**
+   - Add `blog.besbpo.co.za` as a custom domain in Settings → Pages
+   - Create a CNAME record in your DNS:
+     ```
+     CNAME: blog.besbpo.co.za → <username>.github.io
+     ```
+   - The `static/CNAME` file contains `blog.besbpo.co.za` for GitHub Pages
+
+3. **Set Secrets:**
+   - Go to Settings → Secrets and variables → Actions
+   - Add `CMS_API_BASE_URL` secret with your production CMS API URL:
+     ```
+     CMS_API_BASE_URL=https://your-cms-api.example.com
+     ```
+
+### Manual Build
+
+```bash
+npm install
+npm run build
+# Output is in ./out/ directory
+```
+
 ## Try it without a live backend
 
 This app runs and builds out of the box, no CMS deployment required:

@@ -1,43 +1,168 @@
 version: '3.8'
 
 services:
-  cms-api:
-    build: ./besbpo-blog-cms-api
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/besbpo
-      - JWT_SECRET=${JWT_SECRET:-dev-secret}
-    depends_on:
-      - db
-
-  web:
-    build: ./besbpo-blog-web
-    ports:
-      - "3001:3000"
-    environment:
-      - CMS_API_BASE_URL=http://cms-api:3000
-
-  editorial-dashboard:
-    build: ./bespbo-editorial-dashboard
-    ports:
-      - "3002:3000"
-    environment:
-      - CMS_API_BASE_URL=http://cms-api:3000
-
+  # PostgreSQL database with pgvector extension for embeddings
   db:
-    image: postgres:15
+    image: pgvector/pgvector:pg16
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=besbpo
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./besbpo-blog-architecture/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./besbpo-blog-architecture/db/seed_divisions.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
+  # Redis for caching and rate limiting
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # CMS API - NestJS backend
+  cms-api:
+    build:
+      context: ./besbpo-blog-cms-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/besbpo
+      - JWT_SECRET=dev-secret-change-in-production
+      - JWT_EXPIRES_IN=15m
+      - AWS_S3_BUCKET=
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./besbpo-blog-cms-api:/app
+      - /app/node_modules
+    command: npm run start:dev
+
+  # Intelligence Service - Python FastAPI for AI content analysis
   intelligence-svc:
-    build: ./besbpo-blog-intelligence-svc
+    build:
+      context: ./besbpo-blog-intelligence-svc
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - VOYAGE_API_KEY=${VOYAGE_API_KEY:-}
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./besbpo-blog-intelligence-svc:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Syndication Service - Go RSS/Atom feed distribution
+  syndication-svc:
+    build:
+      context: ./besbpo-blog-syndication-svc
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/besbpo
+      - REDIS_URL=redis://redis:6379
+      - ADMIN_JWT_SECRET=dev-secret-change-in-production
+      - SERVICE_JWT_SECRET=dev-secret-change-in-production
+      - PORT=8080
+      - LOG_LEVEL=debug
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./besbpo-blog-syndication-svc:/app
+
+  # Editorial Dashboard - Next.js server (requires auth, can't be static)
+  editorial-dashboard:
+    build:
+      context: ./bespbo-editorial-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - CMS_API_BASE_URL=http://cms-api:3000
+      - NEXT_PUBLIC_CMS_API_URL=http://localhost:3000
+    depends_on:
+      cms-api:
+        condition: service_started
+    volumes:
+      - ./bespbo-editorial-dashboard:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Blog Web - Next.js static export (served separately via GitHub Pages)
+  # This is for LOCAL development only - production deploys to GitHub Pages
+  blog-web-dev:
+    build:
+      context: ./besbpo-blog-web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - CMS_API_BASE_URL=http://cms-api:3000
+      - PORT=3002
+    depends_on:
+      cms-api:
+        condition: service_started
+    volumes:
+      - ./besbpo-blog-web:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Search & Media Service - Rust API (optional, requires Rust toolchain)
+  # Uncomment if you have Rust installed
+  # search-media-svc:
+  #   build:
+  #     context: ./besbpo-blog-search-media-svc
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:postgres@db:5432/besbpo
+  #     - REDIS_URL=redis://redis:6379
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+
+  # Enterprise Service - Java Spring Boot (optional, requires JDK)
+  # Uncomment if you have Java installed
+  # enterprise-svc:
+  #   build:
+  #     context: ./besbpo-blog-enterprise-svc
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8082:8082"
+  #   environment:
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/besbpo
+  #     - SPRING_DATASOURCE_USERNAME=postgres
+  #     - SPRING_DATASOURCE_PASSWORD=postgres
 
 volumes:
   pgdata:
+  redisdata:
