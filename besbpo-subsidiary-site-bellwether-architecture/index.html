@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bellwether Architecture &amp; Engineering</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Bellwether Architecture &amp; Engineering</h1>
+    <p>Architecture · Interior Architecture · Civil &amp; Structural Engineering · Allied Consulting</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Field Notes</h2>
+      <p>Insight from across Bellwether and the wider Besbpo Group, syndicated from
+         <a href="https://blog.besbpo.co.za">blog.besbpo.co.za</a>.</p>
+
+      <!--
+        Phase 4 pilot tenant — built-environment division.
+        Implements the client-side embed widget contract from
+        BESBPO-BLOG-ARCH-02 Section 8. data-tenant-id will be filled in once
+        this site is onboarded via scripts/onboard-pilot-tenants.sh
+        (besbpo-blog-architecture) against a live syndication service.
+      -->
+      <div id="besbpo-feed"
+           data-tenant-id="PENDING_ONBOARDING"
+           data-mode="timeline"
+           data-max-items="6"></div>
+      <script src="https://cdn.besbpo.co.za/embed/v1/embed.js" async></script>
+    </section>
+  </main>
+
+  <footer>
+    <p>Bellwether Architecture &amp; Engineering — part of the Besbpo Group.
+       Read more at <a href="https://blog.besbpo.co.za">blog.besbpo.co.za</a>.</p>
+  </footer>
+</body>
+</html>

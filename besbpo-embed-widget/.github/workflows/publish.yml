@@ -1,0 +1,21 @@
+name: Build and publish embed.js to CDN
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npm run build
+      # PHASE 3 TODO for OpenHands: add the actual publish step — upload
+      # dist/embed.js to the S3 bucket/CDN path referenced by every
+      # subsidiary site (cdn.besbpo.co.za/embed/v1/embed.js), per
+      # Doc-04 Section 4. Versioned as /v1/, /v2/, etc. per Doc-02
+      # Section 11 so a breaking change doesn't silently update every
+      # embedded site at once.

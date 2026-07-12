@@ -1,0 +1,451 @@
+openapi: 3.0.3
+info:
+  title: Besbpo Group Syndication API
+  version: "1.0.0"
+  description: >
+    Contract between the Besbpo Group CMS core and the 30+ subsidiary/divisional
+    sites that syndicate blog.besbpo.co.za content. Implements
+    BESBPO-BLOG-ARCH-02 (Syndication API & Tenant Onboarding Specification).
+  contact:
+    name: Besbpo Group Platform Team
+
+servers:
+  - url: https://syndication.blog.besbpo.co.za/api/v1
+    description: Production
+  - url: https://staging-syndication.blog.besbpo.co.za/api/v1
+    description: Staging
+
+tags:
+  - name: tenants
+    description: Tenant lifecycle management (Syndication Admin only)
+  - name: feed
+    description: Public/tenant-authenticated feed reads
+  - name: articles
+    description: Internal article listing (CMS/Dashboard use)
+  - name: webhooks
+    description: Internal publish-event webhook
+  - name: analytics
+    description: Syndication analytics (Doc-03 Section 8) — summary reporting and the embed widget's beacon
+  - name: taxonomy
+    description: Division taxonomy
+
+paths:
+  /tenants:
+    post:
+      tags: [tenants]
+      summary: Create a new syndication tenant
+      security: [{ adminJwt: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TenantCreateRequest" }
+      responses:
+        "201":
+          description: Tenant created; api_key is shown once, in this response only.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TenantCreateResponse" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /tenants/{tenantId}:
+    get:
+      tags: [tenants]
+      summary: Retrieve tenant configuration
+      security: [{ adminJwt: [] }]
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: Tenant record
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Tenant" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [tenants]
+      summary: Update tenant subscription, display config, delivery mode, or status
+      security: [{ adminJwt: [] }]
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TenantUpdateRequest" }
+      responses:
+        "200":
+          description: Updated tenant
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Tenant" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /tenants/{tenantId}/rotate-key:
+    post:
+      tags: [tenants]
+      summary: Rotate a tenant's API key
+      security: [{ adminJwt: [] }]
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: New API key (shown once)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TenantCreateResponse" }
+
+  /feed/{tenantId}:
+    get:
+      tags: [feed]
+      summary: Get the tenant's division-filtered article feed (JSON)
+      security: [{ tenantApiKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+        - name: cursor
+          in: query
+          schema: { type: string }
+          description: Pagination cursor from a previous response.
+        - name: max_items
+          in: query
+          schema: { type: integer, default: 10, maximum: 50 }
+      responses:
+        "200":
+          description: Filtered feed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Feed" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /feed/{tenantId}.rss:
+    get:
+      tags: [feed]
+      summary: Get the tenant's division-filtered article feed (RSS/Atom)
+      security: [{ tenantApiKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: RSS 2.0 XML feed
+          content:
+            application/rss+xml:
+              schema: { type: string }
+
+  /articles:
+    get:
+      tags: [articles]
+      summary: List articles (internal — CMS/Dashboard use, not for tenant consumption)
+      security: [{ adminJwt: [] }]
+      parameters:
+        - name: division
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { $ref: "#/components/schemas/ArticleStatus" }
+        - name: from
+          in: query
+          schema: { type: string, format: date-time }
+        - name: to
+          in: query
+          schema: { type: string, format: date-time }
+      responses:
+        "200":
+          description: Article list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/ArticleSummary" }
+
+  /articles/{slug}:
+    get:
+      tags: [articles]
+      summary: Full article payload (canonical site only)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Full article
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ArticleFull" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /webhooks/publish:
+    post:
+      tags: [webhooks]
+      summary: Fired by the CMS core on publish/update/unpublish
+      security: [{ serviceJwt: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PublishWebhookPayload" }
+      responses:
+        "202":
+          description: Accepted for processing (cache invalidation + dispatch fan-out)
+
+  /analytics/summary:
+    get:
+      tags: [analytics]
+      summary: Per-tenant and per-division syndication/engagement summary (Doc-03 Section 8)
+      description: >
+        Powers besbpo-editorial-dashboard's analytics view. Admin-only —
+        this is Corporate Comms / Syndication Admin reporting data, not
+        something any tenant or the public should read.
+      security: [{ adminJwt: [] }]
+      responses:
+        "200":
+          description: Analytics summary
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AnalyticsSummary" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /analytics/beacon:
+    post:
+      tags: [analytics]
+      summary: Records a single impression or click-through event from the embed widget
+      description: >
+        Deliberately UNAUTHENTICATED — called directly from
+        besbpo-embed-widget, which runs in a public browser page and
+        cannot safely hold a secret. See besbpo-blog-syndication-svc's
+        internal/analytics/beacon.go for the full rationale. NOT YET RATE
+        LIMITED (a real, open gap — see that file).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BeaconPayload" }
+      responses:
+        "202":
+          description: Accepted (fire-and-forget; the widget does not need to check this)
+        "400": { $ref: "#/components/responses/BadRequest" }
+
+  /taxonomy/divisions:
+    get:
+      tags: [taxonomy]
+      summary: List all division/category tags tenants can subscribe to
+      responses:
+        "200":
+          description: Division list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Division" }
+
+components:
+  securitySchemes:
+    adminJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Short-lived JWT issued by the CMS core after SSO login.
+    tenantApiKey:
+      type: apiKey
+      in: header
+      name: X-Besbpo-Api-Key
+      description: Tenant API key, request additionally HMAC-signed per Doc-02 Section 4.
+    serviceJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Internal service-to-service JWT issued by the CMS core. Never exposed publicly.
+
+  parameters:
+    TenantId:
+      name: tenantId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+
+  responses:
+    BadRequest:
+      description: Invalid request
+    Unauthorized:
+      description: Missing or invalid credentials
+    Forbidden:
+      description: Credentials valid but not permitted for this action
+    NotFound:
+      description: Resource not found
+    RateLimited:
+      description: Tenant has exceeded its rate limit (see Doc-02 Section 10)
+
+  schemas:
+    ArticleStatus:
+      type: string
+      enum: [draft, division_review, corporate_review, scheduled, published, syndicated, archived, rejected]
+
+    DeliveryMode:
+      type: string
+      enum: [client_side, build_time, both]
+
+    TenantStatus:
+      type: string
+      enum: [pending, active, suspended, offboarded]
+
+    DisplayConfig:
+      type: object
+      properties:
+        placement: { type: string, enum: [timeline, sidebar_widget, body_embed, build_time_feature] }
+        max_items: { type: integer, default: 6 }
+        theme_hint: { type: string, description: "Free-form CSS class hint the tenant's own stylesheet targets." }
+
+    Tenant:
+      type: object
+      properties:
+        tenant_id: { type: string, format: uuid }
+        name: { type: string, example: "Bellwether Architecture & Engineering" }
+        domain: { type: string, example: "bae.besbpo.co.za" }
+        division_tags:
+          type: array
+          items: { type: string }
+          example: ["built-environment", "construction"]
+        display_config: { $ref: "#/components/schemas/DisplayConfig" }
+        delivery_mode: { $ref: "#/components/schemas/DeliveryMode" }
+        status: { $ref: "#/components/schemas/TenantStatus" }
+        github_repo: { type: string, example: "besbpo-group/bae-site" }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    TenantCreateRequest:
+      type: object
+      required: [name, domain, division_tags, delivery_mode]
+      properties:
+        name: { type: string }
+        domain: { type: string }
+        division_tags: { type: array, items: { type: string } }
+        display_config: { $ref: "#/components/schemas/DisplayConfig" }
+        delivery_mode: { $ref: "#/components/schemas/DeliveryMode" }
+        github_repo: { type: string }
+
+    TenantUpdateRequest:
+      type: object
+      properties:
+        division_tags: { type: array, items: { type: string } }
+        display_config: { $ref: "#/components/schemas/DisplayConfig" }
+        delivery_mode: { $ref: "#/components/schemas/DeliveryMode" }
+        status: { $ref: "#/components/schemas/TenantStatus" }
+
+    TenantCreateResponse:
+      type: object
+      properties:
+        tenant: { $ref: "#/components/schemas/Tenant" }
+        api_key:
+          type: string
+          description: Plaintext API key — shown exactly once, at creation/rotation time.
+
+    SyndicationMeta:
+      type: object
+      properties:
+        attribution_line: { type: string, example: "Originally published by Besbpo Group" }
+        canonical_rel: { type: boolean, default: true }
+
+    ArticleSummary:
+      type: object
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        title: { type: string }
+        excerpt: { type: string }
+        canonical_url: { type: string, format: uri }
+        division_tags: { type: array, items: { type: string } }
+        hero_image: { type: string, format: uri }
+        published_at: { type: string, format: date-time }
+        reading_time_minutes: { type: integer }
+        syndication_meta: { $ref: "#/components/schemas/SyndicationMeta" }
+
+    ArticleFull:
+      allOf:
+        - $ref: "#/components/schemas/ArticleSummary"
+        - type: object
+          properties:
+            body_mdx: { type: string }
+            author:
+              type: object
+              properties:
+                name: { type: string }
+                division: { type: string }
+            seo_meta:
+              type: object
+              additionalProperties: true
+
+    Feed:
+      type: object
+      properties:
+        tenant_id: { type: string, format: uuid }
+        generated_at: { type: string, format: date-time }
+        articles:
+          type: array
+          items: { $ref: "#/components/schemas/ArticleSummary" }
+        pagination:
+          type: object
+          properties:
+            next_cursor: { type: string, nullable: true }
+
+    PublishWebhookPayload:
+      type: object
+      required: [article_id, event]
+      properties:
+        article_id: { type: string }
+        event: { type: string, enum: [published, updated, unpublished, archived] }
+        division_tags: { type: array, items: { type: string } }
+        occurred_at: { type: string, format: date-time }
+
+    Division:
+      type: object
+      properties:
+        key: { type: string, example: "built-environment" }
+        label: { type: string, example: "Built Environment" }
+        description: { type: string }
+
+    TenantAnalyticsSummary:
+      type: object
+      properties:
+        tenant_id: { type: string, format: uuid }
+        name: { type: string }
+        build_time_dispatches:
+          type: integer
+          description: >
+            Count of build-time repository_dispatch events sent to this
+            tenant. Deliberately NOT called "articles_syndicated" — a
+            client_side-delivery-mode tenant never receives one of these
+            at all, so this metric alone would understate what most
+            tenants actually receive. See feed_reads/click_throughs.
+        feed_reads: { type: integer, description: "Widget impressions (analytics_events, event_type=impression)" }
+        click_throughs: { type: integer, description: "Widget click-throughs back to the canonical article" }
+
+    DivisionAnalyticsSummary:
+      type: object
+      properties:
+        division: { type: string, example: "logistics" }
+        published_articles: { type: integer }
+        feed_reads: { type: integer }
+        click_throughs: { type: integer }
+
+    AnalyticsSummary:
+      type: object
+      properties:
+        generated_at: { type: string, format: date-time }
+        tenants:
+          type: array
+          items: { $ref: "#/components/schemas/TenantAnalyticsSummary" }
+        divisions:
+          type: array
+          items: { $ref: "#/components/schemas/DivisionAnalyticsSummary" }
+
+    BeaconPayload:
+      type: object
+      required: [tenant_id, article_id, event_type]
+      properties:
+        tenant_id: { type: string, format: uuid }
+        article_id: { type: string, format: uuid }
+        event_type: { type: string, enum: [impression, click_through] }

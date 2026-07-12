@@ -1,0 +1,14 @@
+{
+  "name": "besbpo-embed-widget",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Client-side syndication embed widget for the 30+ Besbpo Group subsidiary sites.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}

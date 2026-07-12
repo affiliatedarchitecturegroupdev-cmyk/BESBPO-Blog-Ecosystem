@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Besbpo Group Subsidiary Site — Template</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>[Subsidiary Name]</h1>
+    <p>Replace this template's branding, then wire the syndication widget below.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Latest from Besbpo Group</h2>
+      <!--
+        Implements the client-side embed widget contract from
+        BESBPO-BLOG-ARCH-02 Section 8. Replace data-tenant-id with the value
+        issued during onboarding (see config.json in this repo).
+      -->
+      <div id="besbpo-feed"
+           data-tenant-id="REPLACE_WITH_ISSUED_TENANT_ID"
+           data-mode="timeline"
+           data-max-items="6"></div>
+      <script src="https://cdn.besbpo.co.za/embed/v1/embed.js" async></script>
+    </section>
+  </main>
+
+  <footer>
+    <p>Part of the Besbpo Group. Read more at
+       <a href="https://blog.besbpo.co.za">blog.besbpo.co.za</a>.</p>
+  </footer>
+</body>
+</html>

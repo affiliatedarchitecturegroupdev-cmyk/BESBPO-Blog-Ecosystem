@@ -1,0 +1,30 @@
+name: CI
+
+# The first time `mvn compile`/`mvn test` will ever run against this
+# code — authored with only a JRE available (no JDK, no Maven, no
+# network access — see README's verification caveat), which meant not
+# even `javac` could be used to syntax-check individual files.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+          cache: maven
+
+      - name: Compile
+        run: mvn -B compile
+
+      - name: Test
+        run: mvn -B test

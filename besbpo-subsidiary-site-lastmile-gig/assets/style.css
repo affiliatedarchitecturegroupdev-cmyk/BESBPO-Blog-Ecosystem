@@ -1,0 +1,65 @@
+/* Lastmile Gig (Pty) Ltd — Fleet-as-a-Service / AI Singularity OS.
+   Sleek dark theme with an electric-blue accent, reflecting the
+   platform-and-AI positioning rather than a traditional logistics look. */
+
+:root {
+  --lmg-ink: #0a0e14;
+  --lmg-panel: #131a24;
+  --lmg-blue: #3ea6ff;
+  --lmg-text: #dbe4ee;
+  --lmg-muted: #7d8ea3;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  margin: 0;
+  color: var(--lmg-text);
+  background: var(--lmg-ink);
+  line-height: 1.6;
+}
+
+header {
+  padding: 2.5rem 1.5rem 2rem;
+  background: linear-gradient(135deg, var(--lmg-panel), var(--lmg-ink));
+  border-bottom: 1px solid #1e2733;
+}
+
+header h1 {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--lmg-text), var(--lmg-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+header p { margin: 0; color: var(--lmg-muted); font-size: 0.9rem; }
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+main h2 {
+  color: var(--lmg-blue);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--lmg-muted);
+  font-size: 0.82rem;
+  border-top: 1px solid #1e2733;
+}
+
+footer a { color: var(--lmg-blue); }
+
+.besbpo-feed__item { border-bottom: 1px solid #1e2733; padding: 1rem 0; }
+.besbpo-feed__title { font-weight: 600; color: var(--lmg-text); }
+.besbpo-feed__excerpt { color: var(--lmg-muted); font-size: 0.9rem; }
+.besbpo-feed__attribution { font-size: 0.7rem; color: var(--lmg-blue); }

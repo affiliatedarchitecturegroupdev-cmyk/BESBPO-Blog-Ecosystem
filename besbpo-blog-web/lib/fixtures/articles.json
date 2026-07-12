@@ -1,0 +1,128 @@
+[
+  {
+    "id": "a-1001",
+    "slug": "financing-infrastructure-in-kzn-2026",
+    "title": "Financing Infrastructure Projects in KwaZulu-Natal",
+    "excerpt": "A look at blended-finance structures for built-environment projects, and what they mean for delivery timelines across the province.",
+    "canonical_url": "https://blog.besbpo.co.za/articles/financing-infrastructure-in-kzn-2026",
+    "division_tags": ["built-environment", "consultancy"],
+    "tags": ["investor-update", "case-study"],
+    "hero_image": null,
+    "published_at": "2026-06-28T06:30:00Z",
+    "reading_time_minutes": 6,
+    "author": { "name": "Naledi Khumalo", "division": "Consultancy" },
+    "seo_meta": {
+      "meta_title": "Financing Infrastructure Projects in KwaZulu-Natal",
+      "meta_description": "How blended-finance structures are reshaping built-environment project delivery in KZN."
+    },
+    "body_mdx": "# A province under construction\n\nKwaZulu-Natal's built-environment pipeline has grown faster than traditional bank financing can comfortably absorb. Blended-finance structures — combining commercial debt, development finance institution capital, and, increasingly, private equity — have become the default rather than the exception.\n\n## What blended finance actually changes\n\nThe practical effect isn't just a lower cost of capital. It changes *sequencing*: DFI tranches often unlock at different milestones than commercial debt, which means project programmes now need to be built around funding gates, not just construction gates.\n\n> A project that ignores its own financing calendar will eventually be scheduled by it instead.\n\n## Three questions worth asking before groundbreaking\n\n1. Which tranche actually carries the completion risk?\n2. Does the comfort letter structure assume group-wide liquidity, or ring-fence it?\n3. What happens to the programme if one DFI tranche is delayed by a quarter?\n\nThese aren't abstract questions — they're the difference between a sixteen-month programme and a twenty-two-month one."
+  },
+  {
+    "id": "a-1002",
+    "slug": "last-mile-density-and-the-cost-curve",
+    "title": "Last-Mile Density and the Cost Curve",
+    "excerpt": "Why delivery density, not distance, is the number that actually predicts last-mile unit economics.",
+    "canonical_url": "https://blog.besbpo.co.za/articles/last-mile-density-and-the-cost-curve",
+    "division_tags": ["logistics", "last-mile-services"],
+    "tags": ["operations"],
+    "hero_image": null,
+    "published_at": "2026-06-20T08:00:00Z",
+    "reading_time_minutes": 5,
+    "author": { "name": "Sipho Dlamini", "division": "Logistics" },
+    "seo_meta": {
+      "meta_title": "Last-Mile Density and the Cost Curve",
+      "meta_description": "Delivery density, not distance, is what actually predicts last-mile unit economics."
+    },
+    "body_mdx": "# Distance is the wrong variable\n\nMost last-mile cost models start with distance. Ours starts with density — stops per square kilometre per hour — because that's the number that actually moves the cost curve.\n\n## Why density wins\n\nA route with low density burns time between stops, not on them. Doubling density on the same route can cut per-parcel cost more than halving distance ever will, because idle transit time between stops is the least productive minute in the entire operation.\n\n## What this means for fleet planning\n\nFleet composition should follow density zones, not administrative boundaries. A single vehicle class across an entire metro is almost always wrong — dense urban cores and low-density peri-urban zones need entirely different vehicle economics."
+  },
+  {
+    "id": "a-1003",
+    "slug": "bpo-workforce-planning-post-2025",
+    "title": "BPO Workforce Planning After the 2025 Shift",
+    "excerpt": "How outsourced workforce planning has changed since AI-assisted tooling became standard across BPO floors.",
+    "canonical_url": "https://blog.besbpo.co.za/articles/bpo-workforce-planning-post-2025",
+    "division_tags": ["bpo"],
+    "tags": ["workforce", "case-study"],
+    "hero_image": null,
+    "published_at": "2026-06-12T09:15:00Z",
+    "reading_time_minutes": 7,
+    "author": { "name": "Palesa Mokoena", "division": "BPO" },
+    "seo_meta": {
+      "meta_title": "BPO Workforce Planning After the 2025 Shift",
+      "meta_description": "Outsourced workforce planning has changed since AI-assisted tooling became standard."
+    },
+    "body_mdx": "# The floor changed faster than the org chart\n\nBy the time most workforce planning teams updated their shift models for AI-assisted tooling, the tooling had already changed again. That lag is the real story of BPO staffing in 2026 — not the tooling itself.\n\n## Three staffing patterns that held up\n\n- Cross-training against ticket *type*, not channel, ahead of volume shifts\n- Keeping a senior-review layer even as first-response time dropped\n- Treating tooling literacy as a hiring criterion, not a training afterthought\n\nNone of these are dramatic. All three were the difference between teams that absorbed the shift and teams that were absorbed by it."
+  },
+  {
+    "id": "a-1004",
+    "slug": "structural-review-cadence-on-fast-track-builds",
+    "title": "Structural Review Cadence on Fast-Track Builds",
+    "excerpt": "Fast-track construction programmes put pressure on structural sign-off cadence. Here's how we've kept review rigor intact.",
+    "canonical_url": "https://blog.besbpo.co.za/articles/structural-review-cadence-on-fast-track-builds",
+    "division_tags": ["construction", "built-environment"],
+    "tags": ["engineering", "case-study"],
+    "hero_image": null,
+    "published_at": "2026-05-30T07:45:00Z",
+    "reading_time_minutes": 6,
+    "author": { "name": "Thabo Nkosi", "division": "Construction" },
+    "seo_meta": {
+      "meta_title": "Structural Review Cadence on Fast-Track Builds",
+      "meta_description": "How structural sign-off cadence holds up under fast-track construction pressure."
+    },
+    "body_mdx": "# Speed is not the enemy of rigor\n\nFast-track programmes compress the calendar, not the checklist. The mistake most teams make is compressing both.\n\n## What we changed instead\n\nRather than reducing review depth, we moved structural sign-off earlier in the design-freeze sequence, so review cadence and construction cadence stopped competing for the same week."
+  },
+  {
+    "id": "a-1005",
+    "slug": "property-development-yield-assumptions-2026",
+    "title": "Revisiting Yield Assumptions for 2026 Developments",
+    "excerpt": "Yield assumptions baked into 2023-era feasibility studies are quietly out of date. Here's what's changed.",
+    "canonical_url": "https://blog.besbpo.co.za/articles/property-development-yield-assumptions-2026",
+    "division_tags": ["property-development", "real-estate"],
+    "tags": ["investor-update"],
+    "hero_image": null,
+    "published_at": "2026-05-18T10:00:00Z",
+    "reading_time_minutes": 5,
+    "author": { "name": "Naledi Khumalo", "division": "Consultancy" },
+    "seo_meta": {
+      "meta_title": "Revisiting Yield Assumptions for 2026 Developments",
+      "meta_description": "Why 2023-era feasibility yield assumptions need revisiting in 2026."
+    },
+    "body_mdx": "# The assumptions moved before the models did\n\nA feasibility study is only as good as the year it was written in. Several yield assumptions common in 2023-era models haven't kept pace with financing cost shifts since.\n\n## Where the gap shows up\n\nMost visibly in mixed-use schemes, where the residential component's yield assumptions were the first to drift — and the last to get revisited, since the commercial component usually drives the headline feasibility number."
+  },
+  {
+    "id": "a-1006",
+    "slug": "engineering-platform-notes-syndication-launch",
+    "title": "Engineering Notes: Standing Up the Group's Content Platform",
+    "excerpt": "A behind-the-scenes look at the engineering decisions behind this very blog and its syndication model.",
+    "canonical_url": "https://blog.besbpo.co.za/articles/engineering-platform-notes-syndication-launch",
+    "division_tags": ["enterprise-software", "corporate"],
+    "tags": ["engineering"],
+    "hero_image": null,
+    "published_at": "2026-05-02T11:30:00Z",
+    "reading_time_minutes": 8,
+    "author": { "name": "Fortune Ndaba", "division": "Corporate" },
+    "seo_meta": {
+      "meta_title": "Engineering Notes: Standing Up the Group's Content Platform",
+      "meta_description": "The engineering decisions behind Besbpo Group's blog and syndication platform."
+    },
+    "body_mdx": "# Publish once, distribute everywhere\n\nThis platform exists because a single insight from any one of our divisions needs to reach very different audiences without being rewritten for each one.\n\n## The two-tier shape\n\nA static presentation layer keeps every public site fast and cheap to run. A dynamic syndication layer does the harder work of routing content to the right audience. Neither layer needs to know much about the other beyond a small, versioned contract.\n\n```\npublish -> webhook -> cache invalidation -> (optional) rebuild trigger\n```\n\nThat contract is deliberately small. Keeping it that way is most of the job."
+  },
+  {
+    "id": "a-1007",
+    "slug": "venue-risk-grading-and-staffing-ratios",
+    "title": "Venue Risk Grading and Staffing Ratios, Explained",
+    "excerpt": "Why we grade venues before we staff them, and how that grading actually drives the shift plan.",
+    "canonical_url": "https://blog.besbpo.co.za/articles/venue-risk-grading-and-staffing-ratios",
+    "division_tags": ["security-services"],
+    "tags": ["operations"],
+    "hero_image": null,
+    "published_at": "2026-04-20T09:00:00Z",
+    "reading_time_minutes": 5,
+    "author": { "name": "Sipho Dlamini", "division": "Security Services" },
+    "seo_meta": {
+      "meta_title": "Venue Risk Grading and Staffing Ratios, Explained",
+      "meta_description": "How venue risk grading drives staffing ratios and shift planning for event security."
+    },
+    "body_mdx": "# Grade first, staff second\n\nEvery venue gets graded before a single shift is booked. Skipping that step is how understaffed nights happen.\n\n## What actually goes into a grade\n\nCapacity, alcohol service hours, historical incident data, and entrance/exit geometry — in that order of weight. A venue's reputation matters less than its layout; a well-run room with two chokepoint exits still grades higher risk than a sprawling space with clean sightlines.\n\n## Why the grade drives the ratio, not the other way round\n\nIt's tempting to staff to a client's budget first and adjust the grade to match. We've found that ordering reliably produces the nights that make the news for the wrong reasons. The grade sets the minimum; the client can staff above it, never below."
+  }
+]

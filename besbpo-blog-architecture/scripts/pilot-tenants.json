@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Bellwether Architecture & Engineering",
+    "domain": "bellwetherarchitecture.co.za",
+    "division_tags": ["built-environment"],
+    "display_config": { "placement": "timeline", "max_items": 6 },
+    "delivery_mode": "client_side",
+    "github_repo": "besbpo-group/besbpo-subsidiary-site-bellwether-architecture"
+  },
+  {
+    "name": "Bellwether Electrical & Instrumentation Engineering (BEIE)",
+    "domain": "beie.co.za",
+    "division_tags": ["construction", "built-environment"],
+    "display_config": { "placement": "sidebar_widget", "max_items": 5 },
+    "delivery_mode": "client_side",
+    "github_repo": "besbpo-group/besbpo-subsidiary-site-beie"
+  },
+  {
+    "name": "Garlaws (Pty) Ltd",
+    "domain": "garlaws.aagais.co.za",
+    "division_tags": ["logistics"],
+    "display_config": { "placement": "body_embed", "max_items": 8 },
+    "delivery_mode": "client_side",
+    "github_repo": "besbpo-group/besbpo-subsidiary-site-garlaws"
+  },
+  {
+    "name": "Lastmile Gig (Pty) Ltd",
+    "domain": "lastmilegig.aagais.co.za",
+    "division_tags": ["last-mile-services", "logistics"],
+    "display_config": { "placement": "timeline", "max_items": 6 },
+    "delivery_mode": "client_side",
+    "github_repo": "besbpo-group/besbpo-subsidiary-site-lastmile-gig"
+  },
+  {
+    "name": "Bouncer VIP Express (Pty) Ltd",
+    "domain": "bouncervipexpress.co.za",
+    "division_tags": ["security-services"],
+    "display_config": { "placement": "timeline", "max_items": 6 },
+    "delivery_mode": "client_side",
+    "github_repo": "besbpo-group/besbpo-subsidiary-site-bouncer-vip-express"
+  }
+]

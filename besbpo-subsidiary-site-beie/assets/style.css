@@ -1,0 +1,71 @@
+/* Bellwether Electrical & Instrumentation Engineering (BEIE) —
+   brand palette: green, black, white, navy (per BEIE Nexus branding). */
+
+:root {
+  --beie-green: #1f6b3a;
+  --beie-black: #14161a;
+  --beie-white: #ffffff;
+  --beie-navy: #0f2540;
+  --beie-grey: #eef1ee;
+}
+
+body {
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  color: var(--beie-black);
+  background: var(--beie-white);
+  line-height: 1.6;
+}
+
+header {
+  background: var(--beie-navy);
+  color: var(--beie-white);
+  padding: 2rem 1.5rem;
+  border-bottom: 4px solid var(--beie-green);
+}
+
+header h1 { margin: 0 0 0.3rem; font-weight: 700; }
+header p { margin: 0; color: var(--beie-green); font-size: 0.9rem; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+aside {
+  background: var(--beie-grey);
+  border-left: 3px solid var(--beie-green);
+  padding: 1.25rem;
+  border-radius: 4px;
+}
+
+aside h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--beie-navy);
+  margin-top: 0;
+}
+
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--beie-navy);
+  font-size: 0.85rem;
+  background: var(--beie-grey);
+}
+
+footer a { color: var(--beie-green); }
+
+.besbpo-feed__item { border-bottom: 1px solid #d7ded7; padding: 0.85rem 0; }
+.besbpo-feed__title { font-weight: 600; color: var(--beie-navy); font-size: 0.95rem; }
+.besbpo-feed__excerpt { color: #4a4a44; font-size: 0.85rem; }
+.besbpo-feed__attribution { font-size: 0.7rem; color: var(--beie-green); }

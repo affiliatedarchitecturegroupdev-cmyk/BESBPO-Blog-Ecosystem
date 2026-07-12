@@ -1,0 +1,8 @@
+{
+  "tenant_id": "PENDING_ONBOARDING",
+  "division_tags": ["construction", "built-environment"],
+  "display_mode": "sidebar_widget",
+  "max_items": 5,
+  "brand_name": "Bellwether Electrical & Instrumentation Engineering (BEIE)",
+  "_onboarding_note": "tenant_id and the widget's data-tenant-id below are placeholders until scripts/onboard-pilot-tenants.sh (in besbpo-blog-architecture) is run against a live besbpo-blog-syndication-svc instance."
+}

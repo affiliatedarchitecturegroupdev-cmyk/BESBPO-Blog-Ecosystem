@@ -1,0 +1,8 @@
+{
+  "tenant_id": "PENDING_ONBOARDING",
+  "division_tags": ["built-environment"],
+  "display_mode": "timeline",
+  "max_items": 6,
+  "brand_name": "Bellwether Architecture & Engineering",
+  "_onboarding_note": "tenant_id and the widget's data-tenant-id below are placeholders until scripts/onboard-pilot-tenants.sh (in besbpo-blog-architecture) is run against a live besbpo-blog-syndication-svc instance — see that script and besbpo-blog-architecture/PILOT-WAVE.md for the full Phase 4 rollout process."
+}

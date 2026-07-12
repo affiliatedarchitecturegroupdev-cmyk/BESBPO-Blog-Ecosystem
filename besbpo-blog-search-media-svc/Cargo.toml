@@ -1,0 +1,30 @@
+[package]
+name = "besbpo-blog-search-media-svc"
+version = "0.1.0"
+edition = "2021"
+description = "Search index and media transcoding pipeline for the Besbpo Group blog & syndication platform."
+
+[dependencies]
+# Phase 0 intentionally used only the standard library (see src/http.rs) so
+# that scaffold had zero external dependencies to fetch before OpenHands
+# had network access. Phase 6 adds exactly one dependency — the
+# synchronous `postgres` crate — to replace main.rs's hardcoded seed
+# article with a real sync job reading published articles (and their
+# pgvector embeddings) directly from Postgres, per Doc-03 Section 7:
+# "Phase 0 can run this directly against Postgres." Deliberately NOT
+# `tokio-postgres` — the sync `postgres` crate wraps it behind a plain
+# blocking API internally, so this stays a synchronous, thread-based
+# program with no async runtime to set up, keeping the risk surface as
+# small as it can be for a service that now needs to speak the Postgres
+# wire protocol (which isn't something worth hand-rolling over TcpStream
+# the way src/http.rs hand-rolls HTTP/1.1).
+#
+# The `vector` column is read via an explicit ::text cast and parsed by
+# hand (see src/db.rs's parse_pgvector_text) rather than depending on the
+# companion `pgvector` crate — one fewer unverifiable dependency, at the
+# cost of a small amount of manual parsing this service already owns.
+postgres = "0.19"
+
+[[bin]]
+name = "search-media-svc"
+path = "src/main.rs"

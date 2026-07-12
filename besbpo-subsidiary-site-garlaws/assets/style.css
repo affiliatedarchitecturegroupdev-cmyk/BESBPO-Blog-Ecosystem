@@ -1,0 +1,65 @@
+/* Garlaws (Pty) Ltd — fleet & logistics. Industrial navy + amber palette,
+   distinct from the built-environment pilots' earth tones. */
+
+:root {
+  --gl-navy: #0d2438;
+  --gl-amber: #d97b1f;
+  --gl-white: #f7f8f9;
+  --gl-steel: #4b5a67;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  color: #1a1f24;
+  background: var(--gl-white);
+  line-height: 1.6;
+}
+
+header {
+  background: var(--gl-navy);
+  color: white;
+  padding: 2rem 1.5rem;
+  position: relative;
+}
+
+header::after {
+  content: "";
+  display: block;
+  height: 5px;
+  background: var(--gl-amber);
+}
+
+header h1 { margin: 0 0 0.3rem; font-weight: 700; }
+header p { margin: 0; color: #b8c4cd; font-size: 0.9rem; }
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.fleet-note {
+  background: white;
+  border: 1px solid #dfe3e6;
+  border-left: 4px solid var(--gl-amber);
+  padding: 1rem 1.25rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  color: var(--gl-steel);
+  font-size: 0.92rem;
+}
+
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--gl-steel);
+  font-size: 0.85rem;
+}
+
+footer a { color: var(--gl-amber); }
+
+.besbpo-feed__item { border-bottom: 1px solid #dfe3e6; padding: 1rem 0; }
+.besbpo-feed__title { font-weight: 700; color: var(--gl-navy); }
+.besbpo-feed__excerpt { color: var(--gl-steel); font-size: 0.92rem; }
+.besbpo-feed__attribution { font-size: 0.72rem; color: var(--gl-amber); }

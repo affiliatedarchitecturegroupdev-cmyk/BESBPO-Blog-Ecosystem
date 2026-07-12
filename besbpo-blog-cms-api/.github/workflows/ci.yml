@@ -1,0 +1,42 @@
+name: CI
+
+# The first time `npm install`/`npm run build`/`npm test` will ever run
+# against this code — authored with no network access to fetch
+# @nestjs/*, sharp, bcrypt, or @aws-sdk/client-s3 (see README's
+# verification caveat). Type-checked extensively via a bare `tsc`
+# invocation with the missing-package artifacts filtered out by hand, but
+# that's a real, weaker substitute for an actual install and build —
+# especially for sharp/bcrypt, whose native bindings are a genuinely
+# different risk category from a pure-JS dependency.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # No package-lock.json committed yet (npm install has never run in
+      # this repo's authoring environment) — `npm install` here rather
+      # than `npm ci`. Once a real lockfile exists and gets committed,
+      # switch to `npm ci` for faster, fully-reproducible installs.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test

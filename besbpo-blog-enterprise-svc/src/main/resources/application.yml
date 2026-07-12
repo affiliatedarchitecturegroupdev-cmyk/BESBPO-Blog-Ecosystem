@@ -1,0 +1,30 @@
+server:
+  port: ${PORT:8082}
+
+spring:
+  application:
+    name: besbpo-blog-enterprise-svc
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/besbpo_blog}
+    username: ${DATABASE_USER:besbpo}
+    password: ${DATABASE_PASSWORD:besbpo}
+  jpa:
+    # Deliberately false, always — matching the same decision made in
+    # besbpo-blog-cms-api's app.module.ts (see that repo's README): schema.sql
+    # in besbpo-blog-architecture is the single, canonical source of truth for
+    # table structure. Auto-DDL here would risk fighting that schema for
+    # ownership of the same tables, the exact conflict a Docker Compose
+    # integration review found and fixed on the NestJS side.
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+besbpo:
+  # Phase 7: real HS256 service-JWT verification (see
+  # za.co.besbpo.enterprise.security.ServiceJwtVerifier) — matches the
+  # shared-secret convention already used between besbpo-blog-cms-api and
+  # besbpo-blog-syndication-svc. Must be set to the SAME value as those
+  # services' JWT_SECRET/SERVICE_JWT_SECRET for tokens to actually verify;
+  # see this repo's README for the full cross-service secret-sharing caveat
+  # already documented on the other two services.
+  service-jwt-secret: ${SERVICE_JWT_SECRET:dev-secret-change-me}

@@ -1,0 +1,4 @@
+{
+  "type": "module",
+  "_comment": "Scoped to this directory only, so lib/*.test.ts can run under Node's native test runner as ESM without forcing next.config.js (which uses CommonJS module.exports) into ESM too."
+}

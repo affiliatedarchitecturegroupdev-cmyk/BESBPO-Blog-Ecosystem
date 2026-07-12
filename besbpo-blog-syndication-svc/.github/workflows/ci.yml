@@ -1,0 +1,41 @@
+name: CI
+
+# This is genuinely the first time `go build`/`go vet`/`go test` will
+# ever run against this code — the environment this repo was authored in
+# had no Go toolchain and no network access (see README's verification
+# caveat). Everything was reviewed carefully by hand instead — brace
+# balance checked programmatically, every cross-package call site
+# cross-referenced against its definition — but that's a different and
+# weaker bar than actually compiling. This workflow is the real check.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          # No go.sum committed yet (this repo's go.mod was authored
+          # without network access to actually resolve dependencies) —
+          # cache keyed off go.mod alone until one exists.
+          cache-dependency-path: go.mod
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -v ./...

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bouncer VIP Express</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Bouncer VIP Express</h1>
+    <p>Venue &amp; Event Security · VIP Protection</p>
+  </header>
+
+  <main>
+    <p class="tier-note">
+      Bronze, Silver, Gold, and Platinum coverage tiers, graded to venue risk —
+      operating across KwaZulu-Natal, Gauteng, and the Western Cape.
+    </p>
+
+    <h2>Field notes from across the group</h2>
+    <!--
+      Phase 4 pilot tenant — security-services division (new, see
+      besbpo-blog-architecture/adr/0003-add-security-services-division.md).
+      Implements Doc-02 Section 8. data-tenant-id will be filled in once
+      this site is onboarded via scripts/onboard-pilot-tenants.sh
+      (besbpo-blog-architecture).
+    -->
+    <div id="besbpo-feed"
+         data-tenant-id="PENDING_ONBOARDING"
+         data-mode="timeline"
+         data-max-items="6"></div>
+    <script src="https://cdn.besbpo.co.za/embed/v1/embed.js" async></script>
+  </main>
+
+  <footer>
+    <p>Bouncer VIP Express (Pty) Ltd — part of the Besbpo Group. Read more at
+       <a href="https://blog.besbpo.co.za">blog.besbpo.co.za</a>.</p>
+  </footer>
+</body>
+</html>

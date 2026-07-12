@@ -1,0 +1,33 @@
+name: Build and deploy blog.besbpo.co.za
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [besbpo-content-update]   # fired by besbpo-blog-syndication-svc on publish (Doc-02 Section 7)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+        env:
+          CMS_API_BASE_URL: ${{ secrets.CMS_API_BASE_URL }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+      - id: deployment
+        uses: actions/deploy-pages@v4

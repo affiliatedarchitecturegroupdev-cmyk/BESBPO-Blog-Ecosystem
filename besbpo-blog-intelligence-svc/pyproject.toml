@@ -1,0 +1,8 @@
+[project]
+name = "besbpo-blog-intelligence-svc"
+version = "0.1.0"
+description = "Content intelligence service (auto-tagging, SEO, summarisation, embeddings) for the Besbpo Group blog & syndication platform."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

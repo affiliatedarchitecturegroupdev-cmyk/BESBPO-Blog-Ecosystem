@@ -1,0 +1,23 @@
+name: Rebuild on syndication update
+on:
+  repository_dispatch:
+    types: [besbpo-content-update]   # fired by besbpo-blog-syndication-svc (Doc-02 Section 7)
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - uses: actions/deploy-pages@v4
+

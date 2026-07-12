@@ -1,0 +1,8 @@
+{
+  "tenant_id": "PENDING_ONBOARDING",
+  "division_tags": ["security-services"],
+  "display_mode": "timeline",
+  "max_items": 6,
+  "brand_name": "Bouncer VIP Express (Pty) Ltd",
+  "_onboarding_note": "tenant_id and the widget's data-tenant-id below are placeholders until scripts/onboard-pilot-tenants.sh (in besbpo-blog-architecture) is run against a live besbpo-blog-syndication-svc instance. This pilot also validates the newly-added security-services division (ADR 0003)."
+}

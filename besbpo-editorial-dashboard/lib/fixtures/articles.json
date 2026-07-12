@@ -1,0 +1,53 @@
+[
+  {
+    "id": "a1000000-0000-0000-0000-000000000001",
+    "slug": "financing-blended-finance-built-environment",
+    "title": "Financing Infrastructure Projects in KwaZulu-Natal",
+    "excerpt": "A look at blended-finance structures for built-environment projects across the province.",
+    "excerptSource": "human",
+    "bodyMdx": "# Blended finance in practice\n\nA look at how blended-finance structures are actually put together for built-environment projects...",
+    "status": "draft",
+    "authorId": "user-1",
+    "divisionTags": ["built-environment"],
+    "divisionTagsSource": "human",
+    "tags": [{ "id": "t1", "name": "finance" }],
+    "seoMeta": {},
+    "seoMetaSource": "human",
+    "createdAt": "2026-06-01T09:00:00Z",
+    "updatedAt": "2026-06-01T09:00:00Z"
+  },
+  {
+    "id": "a1000000-0000-0000-0000-000000000002",
+    "slug": "venue-risk-grading-staffing-ratios",
+    "title": "Venue Risk Grading and Staffing Ratios, Explained",
+    "excerpt": "AI-drafted summary pending review — grade first, staff second.",
+    "excerptSource": "ai_proposed",
+    "bodyMdx": "# Grade first, staff second\n\nEvery venue gets graded before a single shift is booked...",
+    "status": "division_review",
+    "authorId": "user-2",
+    "divisionTags": ["security-services"],
+    "divisionTagsSource": "ai_proposed",
+    "tags": [],
+    "seoMeta": { "meta_title": "Venue Risk Grading, Explained", "meta_description": "How venue risk grading drives staffing ratios." },
+    "seoMetaSource": "ai_proposed",
+    "createdAt": "2026-06-15T10:00:00Z",
+    "updatedAt": "2026-06-15T10:00:00Z"
+  },
+  {
+    "id": "a1000000-0000-0000-0000-000000000003",
+    "slug": "publish-once-distribute-everywhere",
+    "title": "Publish Once, Distribute Everywhere",
+    "excerpt": "Why the syndication platform exists, and the two-tier shape behind it.",
+    "excerptSource": "human_approved",
+    "bodyMdx": "# Publish once, distribute everywhere\n\nThis platform exists because a single insight needs to reach very different audiences...",
+    "status": "published",
+    "authorId": "user-1",
+    "divisionTags": ["corporate"],
+    "divisionTagsSource": "human_approved",
+    "tags": [{ "id": "t2", "name": "platform" }],
+    "seoMeta": { "meta_title": "Publish Once, Distribute Everywhere", "meta_description": "The two-tier architecture behind Besbpo Group's syndication platform." },
+    "seoMetaSource": "human_approved",
+    "createdAt": "2026-05-20T08:00:00Z",
+    "updatedAt": "2026-05-22T11:30:00Z"
+  }
+]

@@ -1,0 +1,12 @@
+/* Minimal starter styles — replace with the subsidiary's own brand system.
+   Keep the .besbpo-feed__* class hooks below so the embed widget (which
+   ships unstyled per Doc-02 Section 8) inherits this site's look rather
+   than a generic default. */
+
+body { font-family: system-ui, sans-serif; margin: 0; color: #1a1a1a; }
+header, footer { padding: 1.5rem; }
+main { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
+
+.besbpo-feed__item { border-bottom: 1px solid #e2e2e2; padding: 1rem 0; }
+.besbpo-feed__title { font-weight: 600; }
+.besbpo-feed__excerpt { color: #4a4a4a; font-size: 0.95rem; }
