@@ -1,0 +1,21 @@
+# Dependabot configuration for Go modules
+# Reference: Master Plan Section 6.5
+
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "go"
+    # Enable automated security updates
+    allow:
+      - dependency-type: "all"

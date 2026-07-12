@@ -1,0 +1,61 @@
+{
+  "name": "BESBPO Blog Platform (Full Stack)",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.22"
+    },
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "stable"
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "distro": "ubuntu"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/postgresql-client:1": {}
+  },
+  "forwardPorts": [3000, 3001, 3002, 5432, 6379, 8000, 8080, 8081, 8082],
+  "portsAttributes": {
+    "3000": { "label": "CMS API" },
+    "3001": { "label": "Editorial Dashboard" },
+    "3002": { "label": "Blog Web" },
+    "5432": { "label": "PostgreSQL" },
+    "6379": { "label": "Redis" },
+    "8000": { "label": "Intelligence API" },
+    "8080": { "label": "Syndication API" },
+    "8081": { "label": "Search API" },
+    "8082": { "label": "Enterprise API" }
+  },
+  "postCreateCommand": "bash scripts/devcontainer-setup.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "files.watcherExclude": {
+          "**/node_modules/**": true,
+          "**/.next/**": true,
+          "**/target/**": true
+        }
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-typescript-next",
+        "golang.go",
+        "rust-lang.rust-analyzer",
+        "redhat.java",
+        "ms-python.python"
+      ]
+    }
+  }
+}

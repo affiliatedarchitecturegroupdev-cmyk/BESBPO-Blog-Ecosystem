@@ -1,0 +1,75 @@
+# Dependabot configuration for BESBPO Blog Platform
+# Reference: Master Plan Section 6.5
+
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directories:
+      - "/besbpo-blog-cms-api"
+      - "/besbpo-blog-web"
+      - "/besbpo-editorial-dashboard"
+      - "/besbpo-embed-widget"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Auto-merge security updates
+    labels:
+      - "dependencies"
+      - "automerge"
+    review-before-merging: true
+
+  # Enable version updates for Python/pip
+  - package-ecosystem: "pip"
+    directories:
+      - "/besbpo-blog-intelligence-svc"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automerge"
+    review-before-merging: true
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directories:
+      - "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "ci"
+      - "dependencies"
+
+# Additional configurations for language-specific tools
+# These are configured in individual repository .github/dependabot.yml files:
+# - Go modules (besbpo-blog-syndication-svc)
+# - Rust crates (besbpo-blog-search-media-svc)
+# - Maven artifacts (besbpo-blog-enterprise-svc)

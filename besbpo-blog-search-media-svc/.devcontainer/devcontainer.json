@@ -1,0 +1,29 @@
+{
+  "name": "BESBPO Search & Media Service",
+  "image": "mcr.microsoft.com/devcontainers/rust:latest",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    }
+  },
+  "forwardPorts": [8081],
+  "portsAttributes": {
+    "8081": {
+      "label": "Search API",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "postCreateCommand": "cargo fetch",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "rust-analyzer.checkOnSave.command": "clippy"
+      },
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb"
+      ]
+    }
+  }
+}

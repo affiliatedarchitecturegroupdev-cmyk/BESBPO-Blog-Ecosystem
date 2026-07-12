@@ -1,0 +1,36 @@
+{
+  "name": "BESBPO Enterprise Service",
+  "image": "mcr.microsoft.com/devcontainers/java:1-21",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    }
+  },
+  "forwardPorts": [8082],
+  "portsAttributes": {
+    "8082": {
+      "label": "Enterprise API",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "postCreateCommand": "mvn dependency:resolve",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "java.import.gradle.java.home": "/usr/lib/jvm/java-21-openjdk-amd64",
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-21",
+            "path": "/usr/lib/jvm/java-21-openjdk-amd64",
+            "default": true
+          }
+        ]
+      },
+      "extensions": [
+        "redhat.java",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-maven"
+      ]
+    }
+  }
+}
