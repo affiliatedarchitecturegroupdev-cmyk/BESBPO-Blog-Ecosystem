@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>za.co.besbpo</groupId>
+  <artifactId>besbpo-blog-enterprise-svc</artifactId>
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+  <name>besbpo-blog-enterprise-svc</name>
+  <description>Enterprise integration service (SSO, audit logging) for the Besbpo Group blog &amp; syndication platform.</description>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.1</version>
+    <relativePath/>
+  </parent>
+
+  <properties>
+    <java.version>21</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <!-- Phase 7: real audit persistence (was an in-memory CopyOnWriteArrayList). -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Phase 7: service-JWT verification on /api/v1/audit, matching the
+         shared-secret HS256 convention already used between
+         besbpo-blog-cms-api and besbpo-blog-syndication-svc. Deliberately
+         NOT a JWT library (e.g. JJWT) — see the header comment in
+         src/main/java/za/co/besbpo/enterprise/security/ServiceJwtVerifier.java
+         for why: JJWT enforces a minimum HMAC key length that would
+         reject the same short dev secrets the Go/NestJS services accept
+         using raw secret bytes directly, which would silently break
+         cross-language interoperability rather than preserve it. Hand-
+         rolled instead using javax.crypto.Mac (JDK stdlib) and Jackson
+         (already transitively present via spring-boot-starter-web) — no
+         new dependency for this. spring-boot-starter-security is still
+         needed for the servlet filter chain / OncePerRequestFilter
+         plumbing that wires the hand-rolled verifier in. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <!-- PHASE 8 TODO for OpenHands: add spring-boot-starter-oauth2-resource-server
+         (or -client) for real human SSO on the Editorial Dashboard once an
+         actual identity provider is chosen — deliberately not attempted in
+         Phase 7 (would mean guessing a specific IdP with no real decision
+         made yet; see this repo's README). -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

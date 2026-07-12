@@ -1,0 +1,8 @@
+{
+  "_comment": "Fill this in during tenant onboarding (Doc-02 Section 3). tenant_id and api_key come from the Syndication Admin at provisioning time; never commit the real api_key to this file in a public repo — use a GitHub Actions secret instead and inject it at build time.",
+  "tenant_id": "REPLACE_WITH_ISSUED_TENANT_ID",
+  "division_tags": ["REPLACE_WITH_SUBSCRIBED_DIVISIONS"],
+  "display_mode": "timeline",
+  "max_items": 6,
+  "brand_name": "REPLACE_WITH_SUBSIDIARY_NAME"
+}

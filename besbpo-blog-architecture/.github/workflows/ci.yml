@@ -1,0 +1,89 @@
+name: CI
+
+# schema.sql has never been applied against a real Postgres instance
+# anywhere in this platform's development — every check on it so far has
+# been static (parenthesis balance, table-ordering checks via Python, a
+# programmatic dependency-cycle check on docker-compose.yml). This
+# workflow's first job is that real, missing check.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-schema:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        # NOT plain `postgres:16` — schema.sql requires the pgvector
+        # extension (`CREATE EXTENSION vector`, for articles.embedding),
+        # which isn't present on the stock Postgres image. pgvector's own
+        # published image is the standard way to get both in one
+        # container.
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: besbpo
+          POSTGRES_PASSWORD: besbpo
+          POSTGRES_DB: besbpo_blog
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply schema.sql
+        env:
+          PGPASSWORD: besbpo
+        run: psql -h localhost -U besbpo -d besbpo_blog -v ON_ERROR_STOP=1 -f db/schema.sql
+
+      - name: Apply seed data
+        env:
+          PGPASSWORD: besbpo
+        run: psql -h localhost -U besbpo -d besbpo_blog -v ON_ERROR_STOP=1 -f db/seed_divisions.sql
+
+      - name: Confirm all 13 tables exist
+        env:
+          PGPASSWORD: besbpo
+        run: |
+          count=$(psql -h localhost -U besbpo -d besbpo_blog -t -c \
+            "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';")
+          echo "Found $count tables"
+          [ "$(echo $count | tr -d ' ')" = "13" ] || (echo "expected 13 tables" && exit 1)
+
+  validate-configs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Validate OpenAPI spec is well-formed YAML
+        run: python3 -c "import yaml; yaml.safe_load(open('openapi/syndication-api.yaml')); print('OK')"
+
+      - name: Validate taxonomy JSON
+        run: python3 -c "import json; json.load(open('taxonomy/divisions.seed.json')); print('OK')"
+
+      - name: Validate pilot-tenants.json
+        run: python3 -c "import json; json.load(open('scripts/pilot-tenants.json')); print('OK')"
+
+      - name: Validate full-rollout-tenants.template.json
+        run: python3 -c "import json; json.load(open('scripts/full-rollout-tenants.template.json')); print('OK')"
+
+      - name: Shell script syntax check
+        run: |
+          bash -n scripts/onboard-pilot-tenants.sh
+          bash -n scripts/scaffold-subsidiary-site.sh
+
+      - name: Dry-run the tenant onboarding script
+        run: ./scripts/onboard-pilot-tenants.sh --dry-run

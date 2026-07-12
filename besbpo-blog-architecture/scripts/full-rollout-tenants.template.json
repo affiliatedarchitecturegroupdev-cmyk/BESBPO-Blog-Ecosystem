@@ -1,0 +1,10 @@
+[
+  {
+    "name": "REPLACE ME — Example Subsidiary (Pty) Ltd",
+    "domain": "replace-me.co.za",
+    "division_tags": ["consultancy"],
+    "display_config": { "placement": "timeline", "max_items": 6 },
+    "delivery_mode": "client_side",
+    "github_repo": "besbpo-group/besbpo-subsidiary-site-replace-me"
+  }
+]

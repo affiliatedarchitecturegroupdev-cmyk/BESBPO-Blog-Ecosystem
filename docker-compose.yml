@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  cms-api:
+    build: ./besbpo-blog-cms-api
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/besbpo
+      - JWT_SECRET=${JWT_SECRET:-dev-secret}
+    depends_on:
+      - db
+
+  web:
+    build: ./besbpo-blog-web
+    ports:
+      - "3001:3000"
+    environment:
+      - CMS_API_BASE_URL=http://cms-api:3000
+
+  editorial-dashboard:
+    build: ./bespbo-editorial-dashboard
+    ports:
+      - "3002:3000"
+    environment:
+      - CMS_API_BASE_URL=http://cms-api:3000
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=besbpo
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  intelligence-svc:
+    build: ./besbpo-blog-intelligence-svc
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:

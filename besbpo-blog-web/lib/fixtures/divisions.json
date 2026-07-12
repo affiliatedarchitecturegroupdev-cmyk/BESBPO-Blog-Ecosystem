@@ -1,0 +1,13 @@
+[
+  { "key": "built-environment", "label": "Built Environment", "description": "Multi-disciplinary architecture & engineering practices" },
+  { "key": "construction", "label": "Construction", "description": "Contracting, project delivery, site execution" },
+  { "key": "real-estate", "label": "Real Estate", "description": "Brokerage, asset management, leasing" },
+  { "key": "property-development", "label": "Property Development", "description": "Land development, mixed-use, residential/commercial schemes" },
+  { "key": "logistics", "label": "Logistics", "description": "Fleet, freight, distribution" },
+  { "key": "last-mile-services", "label": "Last-Mile Services", "description": "Last-mile delivery technology and operations" },
+  { "key": "enterprise-software", "label": "Enterprise Software", "description": "Internal platforms, SaaS products, engineering" },
+  { "key": "bpo", "label": "Business Process Outsourcing", "description": "BPO operations" },
+  { "key": "consultancy", "label": "Consultancy", "description": "Advisory, strategy, feasibility" },
+  { "key": "security-services", "label": "Security Services", "description": "Venue and event security, VIP protection, nightlife security operations" },
+  { "key": "corporate", "label": "Corporate", "description": "Group-wide announcements, investor relations, culture" }
+]

@@ -1,0 +1,8 @@
+{
+  "tenant_id": "PENDING_ONBOARDING",
+  "division_tags": ["logistics"],
+  "display_mode": "body_embed",
+  "max_items": 8,
+  "brand_name": "Garlaws (Pty) Ltd",
+  "_onboarding_note": "tenant_id and the widget's data-tenant-id below are placeholders until scripts/onboard-pilot-tenants.sh (in besbpo-blog-architecture) is run against a live besbpo-blog-syndication-svc instance."
+}

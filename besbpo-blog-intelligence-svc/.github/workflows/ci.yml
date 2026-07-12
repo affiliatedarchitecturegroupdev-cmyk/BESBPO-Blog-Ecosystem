@@ -1,0 +1,31 @@
+name: CI
+
+# Unlike this platform's Go/Rust/Java services, Python code here HAS been
+# genuinely executed during development — every pure, stdlib-only module
+# (retry logic, prompt building, response parsing — 54 tests total) was
+# run for real via `python3 -m unittest`. What's never run even once is
+# the actual pytest suite (which needs pydantic/httpx installed) or the
+# full FastAPI app itself. This workflow closes that remaining gap.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Test
+        run: pytest -v

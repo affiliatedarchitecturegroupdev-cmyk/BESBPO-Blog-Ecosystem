@@ -1,0 +1,16 @@
+{
+  "_comment": "Used only by `npm run test:components` (tsx --tsconfig tsconfig.test.json). The real app build reads tsconfig.json, not this file — the `paths` override below exists so component tests can render with plain react-dom/server, without pulling in the full Next.js runtime.",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "target": "ES2020",
+    "baseUrl": ".",
+    "paths": {
+      "next/link": ["./test-mocks/next-link.tsx"],
+      "next/navigation": ["./test-mocks/next-navigation.ts"]
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "_comment": "Used only by `npm run test:components` (tsx --tsconfig tsconfig.test.json). The real app build reads tsconfig.json, not this file. next/link and next/cache are mocked via `paths` below — needed since the authoring UI pass added real navigation (ArticleListTable) and Server Actions that call revalidatePath (app/articles/actions.ts, pulled in transitively by FieldSourceBadge).",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "target": "ES2020",
+    "baseUrl": ".",
+    "paths": {
+      "next/link": ["./test-mocks/next-link.tsx"],
+      "next/cache": ["./test-mocks/next-cache.ts"],
+      "next/navigation": ["./test-mocks/next-navigation.ts"],
+      "next/headers": ["./test-mocks/next-headers.ts"]
+    }
+  }
+}

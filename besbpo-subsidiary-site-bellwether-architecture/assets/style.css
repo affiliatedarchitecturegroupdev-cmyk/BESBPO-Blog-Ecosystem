@@ -1,0 +1,67 @@
+/* Bellwether Architecture & Engineering — brand palette: Black, Olive,
+   White, Red, Navy (per the firm's established brand system). */
+
+:root {
+  --bae-black: #1a1a17;
+  --bae-olive: #5c6b3c;
+  --bae-white: #fafaf7;
+  --bae-red: #a13a2c;
+  --bae-navy: #1c2b3a;
+}
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  margin: 0;
+  color: var(--bae-black);
+  background: var(--bae-white);
+  line-height: 1.6;
+}
+
+header {
+  background: var(--bae-black);
+  color: var(--bae-white);
+  padding: 2rem 1.5rem;
+  border-bottom: 3px solid var(--bae-olive);
+}
+
+header h1 {
+  margin: 0 0 0.4rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+header p {
+  margin: 0;
+  color: var(--bae-olive);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+main h2 {
+  color: var(--bae-navy);
+  border-bottom: 1px solid var(--bae-olive);
+  padding-bottom: 0.5rem;
+}
+
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--bae-navy);
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: var(--bae-red);
+}
+
+.besbpo-feed__item { border-bottom: 1px solid #ddd; padding: 1rem 0; }
+.besbpo-feed__title { font-weight: 600; color: var(--bae-navy); }
+.besbpo-feed__excerpt { color: #4a4a44; font-size: 0.95rem; }
+.besbpo-feed__attribution { font-size: 0.75rem; color: var(--bae-olive); }

@@ -1,0 +1,30 @@
+name: Rebuild on syndication update
+on:
+  repository_dispatch:
+    types: [besbpo-content-update]   # fired by besbpo-blog-syndication-svc (Doc-02 Section 7)
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # PHASE 4 TODO for whichever subsidiary adopts this template: if this
+      # site is build_time/both delivery mode (Doc-02 Section 2), add a
+      # build step here that calls
+      # GET /api/v1/feed/{tenant_id} using the tenant_id in config.json and
+      # regenerates the featured-content section of index.html before
+      # deploying. This template ships with the client-side widget only
+      # (Doc-02 Section 8), which needs no build step — this workflow exists
+      # so build-time tenants have a correct trigger to build on top of.
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - uses: actions/deploy-pages@v4

@@ -1,0 +1,46 @@
+name: CI
+
+# `npm test`/`npm run test:components` HAVE genuinely run in this repo's
+# authoring environment (73 tests, real react-dom/server rendering) —
+# those commands are known-good. `npm install`/`npm run build` have not
+# (no network access to actually fetch next/react/sharp's frontend
+# counterparts — see README's verification caveat), so this workflow's
+# install/build steps are the real first run for those specifically.
+#
+# No real env vars are needed for the build itself to succeed — every
+# external call (CMS API, syndication service) is resolved at REQUEST
+# time via `force-dynamic` pages with a fixture fallback, not at build
+# time, so `next build` only needs the code to compile.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # No package-lock.json committed yet — `npm install` rather than
+      # `npm ci` until a real one exists and gets committed.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Unit tests (pure logic)
+        run: npm test
+
+      - name: Component tests (real react-dom/server rendering)
+        run: npm run test:components
+
+      - name: Build
+        run: npm run build

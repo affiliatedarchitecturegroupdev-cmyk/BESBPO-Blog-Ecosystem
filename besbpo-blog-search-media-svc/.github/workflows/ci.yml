@@ -1,0 +1,39 @@
+name: CI
+
+# The first time `cargo build`/`cargo test` will ever run against this
+# code — authored with no Rust toolchain and no network access (see
+# README's verification caveat). Reviewed carefully by hand instead
+# (brace balance checked programmatically, every call site cross-checked
+# against its definition, including deref coercion at call sites), but
+# that's a different and weaker bar than actually compiling.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Test
+        run: cargo test --verbose
+
+      # Informational only (continue-on-error) — clippy can surface a lot
+      # of style-level lints on code that was never run through it even
+      # once, and the goal of THIS workflow's other two steps is a clean
+      # signal on correctness first. Worth looking at, not worth blocking
+      # the build on for the first real run.
+      - name: Clippy (informational)
+        run: cargo clippy -- -W clippy::all
+        continue-on-error: true

@@ -1,0 +1,79 @@
+/* Bouncer VIP Express (Pty) Ltd — nightlife & event security, VIP
+   protection. Black + gold, reflecting the Gold/Platinum tier naming
+   already established in the company's pricing structure. */
+
+:root {
+  --bve-black: #0c0c0d;
+  --bve-gold: #c9a227;
+  --bve-white: #f4f3ef;
+  --bve-grey: #2a2a2c;
+}
+
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  color: var(--bve-white);
+  background: var(--bve-black);
+  line-height: 1.6;
+}
+
+header {
+  padding: 2.5rem 1.5rem 2rem;
+  text-align: center;
+  border-bottom: 2px solid var(--bve-gold);
+}
+
+header h1 {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--bve-gold);
+}
+
+header p {
+  margin: 0;
+  color: #b8b6ae;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+main h2 {
+  color: var(--bve-gold);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--bve-grey);
+  padding-bottom: 0.5rem;
+}
+
+.tier-note {
+  background: var(--bve-grey);
+  border-left: 3px solid var(--bve-gold);
+  padding: 1rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #cfcdc6;
+  margin-bottom: 1.5rem;
+}
+
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  color: #948f80;
+  font-size: 0.82rem;
+  border-top: 1px solid var(--bve-grey);
+}
+
+footer a { color: var(--bve-gold); }
+
+.besbpo-feed__item { border-bottom: 1px solid var(--bve-grey); padding: 1rem 0; }
+.besbpo-feed__title { font-weight: 600; color: var(--bve-white); }
+.besbpo-feed__excerpt { color: #b8b6ae; font-size: 0.9rem; }
+.besbpo-feed__attribution { font-size: 0.7rem; color: var(--bve-gold); }

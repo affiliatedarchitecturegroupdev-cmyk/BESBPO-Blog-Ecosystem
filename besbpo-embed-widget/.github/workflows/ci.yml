@@ -1,0 +1,35 @@
+name: CI
+
+# `npm test` HAS genuinely run in this repo's authoring environment (6
+# tests, a minimal hand-rolled DOM shim — no jsdom dependency). The build
+# (`tsc -p tsconfig.json`, compiling to plain JS for distribution) has
+# not been exercised via the real TypeScript compiler with real
+# @types/node installed — this workflow is the first real run of that.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
