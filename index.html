@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BESBPO Group Blog - Insights on built environment, logistics, BPO, construction, and more.">
+  <title>BESBPO Group Blog | blog.besbpo.co.za</title>
+  <style>
+    :root {
+      --bg-primary: #faf9f7;
+      --bg-secondary: #f0eeeb;
+      --text-primary: #1a1a1a;
+      --text-secondary: #4a4a4a;
+      --text-muted: #7a7a7a;
+      --accent: #c4873a;
+      --accent-light: #e8d5c4;
+      --border: #d4d0c8;
+      --grid-pattern: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0H0v20' fill='none' stroke='%23d4d0c8' stroke-width='0.5'/%3E%3C/svg%3E");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      background: var(--bg-secondary);
+      background-image: var(--grid-pattern);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 0;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    nav a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Main Content */
+    main {
+      padding: 64px 0;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 64px;
+      padding-bottom: 48px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .hero h2 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 2px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .cta-button:hover {
+      background: #a8722f;
+      transform: translateY(-1px);
+    }
+
+    /* Articles Grid */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header h3 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .section-header a {
+      font-size: 0.875rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .articles-grid {
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .article-card {
+      background: var(--bg-primary);
+      padding: 32px;
+      transition: background 0.2s;
+    }
+
+    .article-card:hover {
+      background: var(--bg-secondary);
+    }
+
+    .article-meta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .article-meta .division {
+      background: var(--accent-light);
+      color: var(--text-secondary);
+      padding: 2px 8px;
+      border-radius: 1px;
+    }
+
+    .article-meta .date {
+      color: var(--text-muted);
+      padding: 2px 0;
+    }
+
+    .article-card h4 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .article-card h4 a {
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .article-card h4 a:hover {
+      color: var(--accent);
+    }
+
+    .article-card p {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      margin-bottom: 16px;
+    }
+
+    .article-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    .article-footer .author {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .author-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .read-more:hover {
+      text-decoration: underline;
+    }
+
+    /* Divisons Section */
+    .divisions {
+      margin-top: 64px;
+      padding-top: 64px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .divisions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .division-card {
+      background: var(--bg-secondary);
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+    }
+
+    .division-card h5 {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .division-card .count {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 48px 0;
+      margin-top: 64px;
+    }
+
+    footer .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 48px;
+    }
+
+    .footer-section h6 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section li {
+      margin-bottom: 8px;
+    }
+
+    .footer-section a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px dashed var(--border);
+      text-align: center;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #d4edda;
+      color: #155724;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #155724;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 640px) {
+      .hero h2 {
+        font-size: 1.75rem;
+      }
+      
+      header .container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .article-card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <h1>BESBPO Group</h1>
+        <span>blog.besbpo.co.za</span>
+      </div>
+      <nav>
+        <a href="/bespbo-blog-web">View Blog →</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="status-badge">Development Preview</div>
+      <h2>Insights Across the Built Environment</h2>
+      <p>A curated feed of perspectives from across the BESBPO Group — construction, logistics, BPO, security, and the infrastructure that connects them.</p>
+      <a href="/bespbo-blog-web" class="cta-button">Read the Full Blog</a>
+    </section>
+
+    <section>
+      <div class="section-header">
+        <h3>Latest Articles</h3>
+        <a href="/bespbo-blog-web/articles">View All →</a>
+      </div>
+      
+      <div class="articles-grid">
+        <article class="article-card">
+          <div class="article-meta">
+            <span class="division">Built Environment</span>
+            <span class="date">June 28, 2026</span>
+          </div>
+          <h4><a href="#">Financing Infrastructure Projects in KwaZulu-Natal</a></h4>
+          <p>A look at blended-finance structures for built-environment projects, and what they mean for delivery timelines across the province.</p>
+          <div class="article-footer">
+            <div class="author">
+              <div class="author-avatar">NK</div>
+              <span>Naledi Khumalo · 6 min read</span>
+            </div>
+            <a href="/bespbo-blog-web/articles/financing-infrastructure-in-kzn-2026" class="read-more">Read →</a>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="article-meta">
+            <span class="division">Logistics</span>
+            <span class="date">June 20, 2026</span>
+          </div>
+          <h4><a href="#">Last-Mile Density and the Cost Curve</a></h4>
+          <p>Why delivery density, not distance, is the number that actually predicts last-mile unit economics.</p>
+          <div class="article-footer">
+            <div class="author">
+              <div class="author-avatar">SD</div>
+              <span>Sipho Dlamini · 5 min read</span>
+            </div>
+            <a href="/bespbo-blog-web/articles/last-mile-density-and-the-cost-curve" class="read-more">Read →</a>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="article-meta">
+            <span class="division">BPO</span>
+            <span class="date">June 12, 2026</span>
+          </div>
+          <h4><a href="#">BPO Workforce Planning After the 2025 Shift</a></h4>
+          <p>How outsourced workforce planning has changed since AI-assisted tooling became standard across BPO floors.</p>
+          <div class="article-footer">
+            <div class="author">
+              <div class="author-avatar">PM</div>
+              <span>Palesa Mokoena · 7 min read</span>
+            </div>
+            <a href="/besbpo-blog-web/articles/bpo-workforce-planning-post-2025" class="read-more">Read →</a>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="article-meta">
+            <span class="division">Construction</span>
+            <span class="date">May 30, 2026</span>
+          </div>
+          <h4><a href="#">Structural Review Cadence on Fast-Track Builds</a></h4>
+          <p>Fast-track construction programmes put pressure on structural sign-off cadence. Here's how we've kept review rigor intact.</p>
+          <div class="article-footer">
+            <div class="author">
+              <div class="author-avatar">TN</div>
+              <span>Thabo Nkosi · 6 min read</span>
+            </div>
+            <a href="/besbpo-blog-web/articles/structural-review-cadence-on-fast-track-builds" class="read-more">Read →</a>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="article-meta">
+            <span class="division">Property Development</span>
+            <span class="date">May 18, 2026</span>
+          </div>
+          <h4><a href="#">Revisiting Yield Assumptions for 2026 Developments</a></h4>
+          <p>Yield assumptions baked into 2023-era feasibility studies are quietly out of date. Here's what's changed.</p>
+          <div class="article-footer">
+            <div class="author">
+              <div class="author-avatar">NK</div>
+              <span>Naledi Khumalo · 5 min read</span>
+            </div>
+            <a href="/besbpo-blog-web/articles/property-development-yield-assumptions-2026" class="read-more">Read →</a>
+          </div>
+        </article>
+
+        <article class="article-card">
+          <div class="article-meta">
+            <span class="division">Engineering</span>
+            <span class="date">May 2, 2026</span>
+          </div>
+          <h4><a href="#">Engineering Notes: Standing Up the Group's Content Platform</a></h4>
+          <p>A behind-the-scenes look at the engineering decisions behind this very blog and its syndication model.</p>
+          <div class="article-footer">
+            <div class="author">
+              <div class="author-avatar">FN</div>
+              <span>Fortune Ndaba · 8 min read</span>
+            </div>
+            <a href="/besbpo-blog-web/articles/engineering-platform-notes-syndication-launch" class="read-more">Read →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="divisions">
+      <div class="section-header">
+        <h3>Divisions</h3>
+      </div>
+      <div class="divisions-grid">
+        <div class="division-card">
+          <h5>Built Environment</h5>
+          <div class="count">2</div>
+        </div>
+        <div class="division-card">
+          <h5>Logistics</h5>
+          <div class="count">1</div>
+        </div>
+        <div class="division-card">
+          <h5>BPO</h5>
+          <div class="count">1</div>
+        </div>
+        <div class="division-card">
+          <h5>Construction</h5>
+          <div class="count">1</div>
+        </div>
+        <div class="division-card">
+          <h5>Property Development</h5>
+          <div class="count">1</div>
+        </div>
+        <div class="division-card">
+          <h5>Enterprise Software</h5>
+          <div class="count">1</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-section">
+        <h6>Blog</h6>
+        <ul>
+          <li><a href="/bespbo-blog-web">Latest Articles</a></li>
+          <li><a href="/bespbo-blog-web/divisions">By Division</a></li>
+          <li><a href="/bespbo-blog-web/feed.xml">RSS Feed</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h6>Divisions</h6>
+        <ul>
+          <li><a href="/bespbo-blog-web/divisions/built-environment">Built Environment</a></li>
+          <li><a href="/bespbo-blog-web/divisions/logistics">Logistics</a></li>
+          <li><a href="/bespbo-blog-web/divisions/bpo">BPO</a></li>
+          <li><a href="/bespbo-blog-web/divisions/construction">Construction</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h6>Platform</h6>
+        <ul>
+          <li><a href="/bespbo-blog-web">Editorial Dashboard</a></li>
+          <li><a href="/besbpo-blog-cms-api/docs">API Docs</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h6>Group</h6>
+        <ul>
+          <li><a href="#">BESBPO Group Website</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 BESBPO Group. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
