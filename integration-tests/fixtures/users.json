@@ -1,0 +1,77 @@
+{
+  "testUsers": [
+    {
+      "email": "admin@besbpo.co.za",
+      "password": "AdminPassword123!",
+      "displayName": "Admin User",
+      "roles": ["admin"]
+    },
+    {
+      "email": "editor@besbpo.co.za",
+      "password": "EditorPassword123!",
+      "displayName": "Division Editor",
+      "roles": ["division_editor"]
+    },
+    {
+      "email": "author@besbpo.co.za",
+      "password": "AuthorPassword123!",
+      "displayName": "Content Author",
+      "roles": ["author"]
+    }
+  ],
+  "testDivisions": [
+    {
+      "key": "built-environment",
+      "label": "Built Environment",
+      "description": "Infrastructure, construction, and urban development"
+    },
+    {
+      "key": "smart-cities",
+      "label": "Smart Cities",
+      "description": "Technology-driven urban solutions and IoT"
+    },
+    {
+      "key": "sustainability",
+      "label": "Sustainability",
+      "description": "Green building, ESG, and environmental impact"
+    }
+  ],
+  "testArticles": [
+    {
+      "slug": "future-of-smart-cities",
+      "title": "The Future of Smart Cities in South Africa",
+      "excerpt": "Exploring how technology is transforming urban infrastructure.",
+      "bodyMdx": "# The Future of Smart Cities in South Africa\n\n## Introduction\n\nSmart cities represent the next evolution in urban development...",
+      "divisionTags": ["smart-cities", "built-environment"]
+    },
+    {
+      "slug": "sustainable-construction",
+      "title": "Sustainable Construction Practices",
+      "excerpt": "How the construction industry is embracing green building practices.",
+      "bodyMdx": "# Sustainable Construction Practices\n\n## Overview\n\nThe construction industry accounts for a significant portion of global carbon emissions...",
+      "divisionTags": ["sustainability", "built-environment"]
+    }
+  ],
+  "testTenants": [
+    {
+      "name": "Gauteng Infrastructure News",
+      "domain": "gauteng.besbpo.co.za",
+      "divisions": ["built-environment", "infrastructure", "transportation"]
+    },
+    {
+      "name": "Western Cape Development",
+      "domain": "capetown.besbpo.co.za",
+      "divisions": ["smart-cities", "sustainability", "architecture"]
+    }
+  ],
+  "testWebhooks": [
+    {
+      "url": "https://webhook.site/test-webhook-1",
+      "events": ["article.published", "article.updated"]
+    },
+    {
+      "url": "https://webhook.site/test-webhook-2",
+      "events": ["syndication.completed"]
+    }
+  ]
+}

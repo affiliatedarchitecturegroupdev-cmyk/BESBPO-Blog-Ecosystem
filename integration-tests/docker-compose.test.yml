@@ -1,0 +1,189 @@
+# Docker Compose for Integration Testing
+# Reference: Master Plan Section 7
+#
+# Usage:
+#   docker-compose -f docker-compose.test.yml up -d
+#   npm run test:ci
+
+version: '3.8'
+
+services:
+  # Test Database
+  test-db:
+    image: pgvector/pgvector:pg16
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=besbpo_test
+    ports:
+      - "5432:5432"
+    volumes:
+      - test-pgdata:/var/lib/postgresql/data
+      - ../besbpo-blog-architecture/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks:
+      - test-network
+
+  # Test Redis
+  test-redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - test-redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - test-network
+
+  # CMS API for Testing
+  test-cms-api:
+    build:
+      context: ../besbpo-blog-cms-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://postgres:postgres@test-db:5432/besbpo_test
+      - JWT_SECRET=test-secret-for-integration-tests
+      - JWT_EXPIRES_IN=1h
+    depends_on:
+      test-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - test-network
+
+  # Syndication Service for Testing
+  test-syndication-svc:
+    build:
+      context: ../besbpo-blog-syndication-svc
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@test-db:5432/besbpo_test
+      - REDIS_URL=redis://test-redis:6379
+      - ADMIN_JWT_SECRET=test-secret-for-integration-tests
+      - SERVICE_JWT_SECRET=test-secret-for-integration-tests
+      - PORT=8080
+      - LOG_LEVEL=debug
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - test-network
+
+  # Intelligence Service for Testing
+  test-intelligence-svc:
+    build:
+      context: ../besbpo-blog-intelligence-svc
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-test-key}
+      - VOYAGE_API_KEY=${VOYAGE_API_KEY:-test-key}
+      - LOG_LEVEL=debug
+      - REDIS_URL=redis://test-redis:6379
+    depends_on:
+      test-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - test-network
+
+  # Editorial Dashboard for E2E Testing
+  test-editorial-dashboard:
+    build:
+      context: ../bespbo-editorial-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=test
+      - CMS_API_BASE_URL=http://test-cms-api:3000
+      - NEXT_PUBLIC_CMS_API_URL=http://localhost:3000
+    depends_on:
+      test-cms-api:
+        condition: service_healthy
+    networks:
+      - test-network
+
+  # Blog Web for E2E Testing
+  test-blog-web:
+    build:
+      context: ../besbpo-blog-web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=test
+      - CMS_API_BASE_URL=http://test-cms-api:3000
+    depends_on:
+      test-cms-api:
+        condition: service_healthy
+    networks:
+      - test-network
+
+  # Test Runner
+  test-runner:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ..:/app
+    depends_on:
+      test-cms-api:
+        condition: service_healthy
+      test-syndication-svc:
+        condition: service_healthy
+      test-intelligence-svc:
+        condition: service_healthy
+    environment:
+      - CI=true
+      - CMS_API_URL=http://test-cms-api:3000
+      - SYNDICATION_API_URL=http://test-syndication-svc:8080
+      - INTELLIGENCE_API_URL=http://test-intelligence-svc:8000
+      - EDITORIAL_DASHBOARD_URL=http://test-editorial-dashboard:3001
+      - BLOG_WEB_URL=http://test-blog-web:3002
+      - TEST_DB_HOST=test-db
+      - TEST_REDIS_HOST=test-redis
+      - TEARDOWN_DOCKER=false
+    command: >
+      sh -c "npm install &&
+             npm run test:ci"
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
+
+volumes:
+  test-pgdata:
+  test-redisdata:
