@@ -1,0 +1,103 @@
+# Docker Compose Override for Managed Services
+# Reference: Master Plan Section 4
+# 
+# Usage:
+#   docker-compose -f docker-compose.yml -f docker-compose.managed.yml up
+#
+# This override configures services to use managed cloud services
+# (Supabase PostgreSQL + Upstash Redis) instead of local Docker containers.
+
+version: '3.8'
+
+# Note: When using managed services, the local db and redis services
+# are not needed. Remove them from the base docker-compose.yml or
+# comment out below.
+
+services:
+  # CMS API - NestJS backend with managed services
+  cms-api:
+    environment:
+      - NODE_ENV=production
+      # Supabase connection (replaces local PostgreSQL)
+      - DATABASE_URL=${SUPABASE_DATABASE_URL}
+      # Upstash Redis (replaces local Redis)
+      - REDIS_URL=${UPSTASH_REDIS_REST_URL}
+      - REDIS_TOKEN=${UPSTASH_REDIS_REST_TOKEN}
+      # JWT Configuration
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=15m
+      # AWS S3 (for media uploads)
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+      # OIDC - No static credentials needed
+    profiles:
+      - managed
+
+  # Intelligence Service - Python FastAPI with managed services
+  intelligence-svc:
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - VOYAGE_API_KEY=${VOYAGE_API_KEY}
+      - LOG_LEVEL=INFO
+      # Upstash Redis for caching
+      - REDIS_URL=${UPSTASH_REDIS_REST_URL}
+      - REDIS_TOKEN=${UPSTASH_REDIS_REST_TOKEN}
+    profiles:
+      - managed
+
+  # Syndication Service - Go with managed services
+  syndication-svc:
+    environment:
+      # Supabase connection
+      - DATABASE_URL=${SUPABASE_DATABASE_URL}
+      # Upstash Redis
+      - REDIS_URL=${UPSTASH_REDIS_REST_URL}
+      - REDIS_TOKEN=${UPSTASH_REDIS_REST_TOKEN}
+      # JWT Configuration
+      - ADMIN_JWT_SECRET=${JWT_SECRET}
+      - SERVICE_JWT_SECRET=${JWT_SECRET}
+      - PORT=8080
+      - LOG_LEVEL=info
+    profiles:
+      - managed
+
+  # Editorial Dashboard - Next.js with managed API
+  editorial-dashboard:
+    environment:
+      - NODE_ENV=production
+      - CMS_API_BASE_URL=${CMS_API_URL}
+      - NEXT_PUBLIC_CMS_API_URL=${NEXT_PUBLIC_CMS_API_URL}
+    profiles:
+      - managed
+
+  # Blog Web - Next.js with managed API
+  blog-web-dev:
+    environment:
+      - NODE_ENV=production
+      - CMS_API_BASE_URL=${CMS_API_URL}
+    profiles:
+      - managed
+
+  # Search & Media Service - Rust with managed services
+  search-media-svc:
+    environment:
+      - DATABASE_URL=${SUPABASE_DATABASE_URL}
+      - REDIS_URL=${UPSTASH_REDIS_REST_URL}
+      - REDIS_TOKEN=${UPSTASH_REDIS_REST_TOKEN}
+    profiles:
+      - managed
+
+  # Enterprise Service - Java with managed services
+  enterprise-svc:
+    environment:
+      - SPRING_PROFILES_ACTIVE=cloud
+      - SPRING_DATASOURCE_URL=${SUPABASE_DATABASE_URL}
+      # OIDC - No static credentials needed
+    profiles:
+      - managed
+
+# Networks for managed services
+networks:
+  default:
+    external:
+      name: managed-network

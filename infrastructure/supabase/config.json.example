@@ -1,0 +1,52 @@
+{
+  "$schema": "./config.schema.json",
+  "project": {
+    "name": "besbpo-blog",
+    "organization": "besbpo-group",
+    "region": "eu-west-1"
+  },
+  "services": {
+    "api": {
+      "enabled": true,
+      "port": 54321,
+      "max_connections": 100
+    },
+    "db": {
+      "port": 54322,
+      "shadow_port": 54320,
+      "major_version": 16,
+      "pooler": {
+        "enabled": true,
+        "port": 54329,
+        "pool_mode": "transaction",
+        "default_pool_size": 20
+      }
+    },
+    "storage": {
+      "enabled": true,
+      "file_size_limit_mb": 50
+    },
+    "auth": {
+      "enabled": true,
+      "site_url": "http://localhost:3001",
+      "jwt_expiry_seconds": 3600,
+      "enable_signup": true
+    },
+    "realtime": {
+      "enabled": true,
+      "ip_version": "ipv4"
+    }
+  },
+  "secrets": {
+    "postgres_password": "${SUPABASE_POSTGRES_PASSWORD}",
+    "jwt_secret": "${SUPABASE_JWT_SECRET}",
+    "api_keys": {
+      "anon": "${SUPABASE_ANON_KEY}",
+      "service": "${SUPABASE_SERVICE_ROLE_KEY}"
+    }
+  },
+  "pgvector": {
+    "enabled": true,
+    "dimension": 1024
+  }
+}

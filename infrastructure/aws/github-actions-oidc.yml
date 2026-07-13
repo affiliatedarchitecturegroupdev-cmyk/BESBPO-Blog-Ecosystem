@@ -1,0 +1,36 @@
+# GitHub Actions OIDC Workflow Template
+# Reference: Master Plan Section 4
+# This file should be copied to each repository's .github/workflows/oidc.yml
+
+name: AWS OIDC Authentication
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: "Environment (staging|production)"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  configure-aws:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.environment == 'production' 
+            && vars.PROD_GITHUB_ACTIONS_ROLE_ARN 
+            || vars.STAGING_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'eu-west-1' }}
+          audience: "sts.amazonaws.com"
+
+      - name: Validate AWS credentials
+        run: |
+          aws sts get-caller-identity
+          echo "✅ AWS credentials configured successfully"
+          echo "✅ Role: ${{ inputs.environment }}"

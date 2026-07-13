@@ -1,0 +1,64 @@
+# Staging Deployment Workflow with OIDC
+# Reference: Master Plan Section 4
+# 
+# Usage: Copy to .github/workflows/deploy-staging.yml in target repository
+
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ENVIRONMENT: staging
+  AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-1' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Configure AWS OIDC
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.STAGING_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Build and push to ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/${{ vars.ECR_REPOSITORY }}:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/${{ vars.ECR_REPOSITORY }}:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/${{ vars.ECR_REPOSITORY }}:$IMAGE_TAG $ECR_REGISTRY/${{ vars.ECR_REPOSITORY }}:latest
+          docker push $ECR_REGISTRY/${{ vars.ECR_REPOSITORY }}:latest
+
+      # Deploy to ECS (example)
+      - name: Update ECS service
+        run: |
+          aws ecs update-service --cluster besbpo-staging --service ${{ vars.ECS_SERVICE }} --force-new-deployment
+
+      # Invalidate CloudFront
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_STAGING }} --paths "/*"
+
+      - name: Notify deployment
+        run: |
+          echo "✅ Deployment to staging complete!"
+          echo "Image: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ github.sha }}"

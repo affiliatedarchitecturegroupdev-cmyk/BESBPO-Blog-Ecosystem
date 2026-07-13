@@ -1,0 +1,61 @@
+{
+  "$schema": "./config.schema.json",
+  "project": {
+    "name": "besbpo-blog-redis",
+    "region": "eu-west-1",
+    "database_type": "redis"
+  },
+  "tiers": {
+    "free": {
+      "max_data_size_mb": 10,
+      "throughput": "low",
+      "connections": 10
+    },
+    "pay-as-you-go": {
+      "max_data_size_mb": 1000,
+      "throughput": "medium",
+      "connections": 1000
+    },
+    "enterprise": {
+      "max_data_size_mb": 10000,
+      "throughput": "high",
+      "connections": 10000
+    }
+  },
+  "recommended_tier": "pay-as-you-go",
+  "features": {
+    "persistence": true,
+    "tls": true,
+    "clustering": false,
+    "eviction": "noeviction"
+  },
+  "use_cases": {
+    "rate_limiting": {
+      "key_prefix": "ratelimit:",
+      "description": "API rate limiting per tenant/IP"
+    },
+    "caching": {
+      "key_prefix": "cache:",
+      "ttl_seconds": 3600,
+      "description": "Response caching for syndication feeds"
+    },
+    "session": {
+      "key_prefix": "session:",
+      "ttl_seconds": 86400,
+      "description": "User session storage"
+    },
+    "webhook_queue": {
+      "key_prefix": "webhook:",
+      "description": "Webhook delivery queue with retry"
+    }
+  },
+  "secrets": {
+    "rest_token": "${UPSTASH_REDIS_REST_TOKEN}",
+    "rest_url": "${UPSTASH_REDIS_REST_URL}"
+  },
+  "rate_limiting": {
+    "enabled": true,
+    "requests_per_minute": 1000,
+    "burst": 100
+  }
+}
