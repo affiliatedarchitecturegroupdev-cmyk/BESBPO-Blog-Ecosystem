@@ -1,0 +1,244 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Editorial Dashboard CI
+  editorial-dashboard:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-editorial-dashboard/') || contains(join(github.event.commits.*.added, ','), 'besbpo-editorial-dashboard/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-editorial-dashboard/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-editorial-dashboard
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'npm'
+          cache-dependency-path: besbpo-editorial-dashboard/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Unit tests (pure logic)
+        run: npm test
+
+      - name: Component tests
+        run: npm run test:components
+
+      - name: Build
+        run: npm run build
+
+  # CMS API CI
+  cms-api:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-blog-cms-api/') || contains(join(github.event.commits.*.added, ','), 'besbpo-blog-cms-api/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-blog-cms-api/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-blog-cms-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'npm'
+          cache-dependency-path: besbpo-blog-cms-api/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+  # Blog Web CI
+  blog-web:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-blog-web/') || contains(join(github.event.commits.*.added, ','), 'besbpo-blog-web/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-blog-web/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-blog-web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'npm'
+          cache-dependency-path: besbpo-blog-web/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+  # Embed Widget CI
+  embed-widget:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-embed-widget/') || contains(join(github.event.commits.*.added, ','), 'besbpo-embed-widget/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-embed-widget/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-embed-widget
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: 'npm'
+          cache-dependency-path: besbpo-embed-widget/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+
+  # Intelligence Service CI
+  intelligence-svc:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-blog-intelligence-svc/') || contains(join(github.event.commits.*.added, ','), 'besbpo-blog-intelligence-svc/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-blog-intelligence-svc/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-blog-intelligence-svc
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: 'pip'
+          cache-dependency-path: besbpo-blog-intelligence-svc/requirements*.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Test
+        run: pytest
+
+  # Syndication Service CI (Go)
+  syndication-svc:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-blog-syndication-svc/') || contains(join(github.event.commits.*.added, ','), 'besbpo-blog-syndication-svc/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-blog-syndication-svc/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-blog-syndication-svc
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache-dependency-path: besbpo-blog-syndication-svc/go.sum
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
+
+  # Search Media Service CI (Rust)
+  search-media-svc:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-blog-search-media-svc/') || contains(join(github.event.commits.*.added, ','), 'besbpo-blog-search-media-svc/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-blog-search-media-svc/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-blog-search-media-svc
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Test
+        run: cargo test --verbose
+
+  # Enterprise Service CI (Java)
+  enterprise-svc:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'besbpo-blog-enterprise-svc/') || contains(join(github.event.commits.*.added, ','), 'besbpo-blog-enterprise-svc/') || contains(join(github.event.commits.*.removed, ','), 'besbpo-blog-enterprise-svc/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: besbpo-blog-enterprise-svc
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temur"
+          cache: 'maven'
+
+      - name: Build
+        run: mvn compile
+
+      - name: Test
+        run: mvn test
+
+  # Integration Tests CI
+  integration-tests:
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.commits.*.modified, ','), 'integration-tests/') || contains(join(github.event.commits.*.added, ','), 'integration-tests/') || contains(join(github.event.commits.*.removed, ','), 'integration-tests/') || github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: integration-tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run integration tests
+        run: npm test
