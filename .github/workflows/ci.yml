@@ -191,7 +191,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: "21"
-          distribution: "temur"
+          distribution: "temurin"
 
       - name: Build
         run: mvn compile || true
