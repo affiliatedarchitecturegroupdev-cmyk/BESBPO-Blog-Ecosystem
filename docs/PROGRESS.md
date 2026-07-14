@@ -571,3 +571,7 @@ All Phases can run in parallel for subsidiary sites (Sprint 8)
 | Date | Update | By |
 |------|--------|-----|
 | 2026-07-12 | Initial progress tracker created | OpenHands |
+| 2026-07-14 | Fixed Editorial Dashboard TypeScript build errors | OpenHands |
+| 2026-07-14 | All Docker services running successfully | OpenHands |
+| 2026-07-14 | CMS API health endpoint verified (/healthz returns 200 OK) | OpenHands |
+| 2026-07-14 | Editorial Dashboard accessible at http://localhost:3000 | OpenHands |

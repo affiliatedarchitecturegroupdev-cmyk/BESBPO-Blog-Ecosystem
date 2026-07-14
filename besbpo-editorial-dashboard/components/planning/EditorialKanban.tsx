@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import ArticleStatusBadge from '../ArticleStatusBadge';
+import { ArticleStatusBadge } from '../ArticleStatusBadge.tsx';
 import styles from './EditorialKanban.module.css';
 
 export interface KanbanArticle {
