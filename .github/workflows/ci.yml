@@ -30,7 +30,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Unit tests (pure logic)
-        run: npm test
+        run: npx tsx --test lib/*.test.ts
 
       - name: Component tests
         run: npm run test:components
@@ -92,7 +92,7 @@ jobs:
         run: npm run build
 
       - name: Test
-        run: npm test
+        run: npx tsx --test lib/*.test.ts
 
   # Embed Widget CI
   embed-widget:
@@ -115,7 +115,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Test
-        run: npm test
+        run: npx tsx --test test/*.test.ts
 
   # Intelligence Service CI
   intelligence-svc:
