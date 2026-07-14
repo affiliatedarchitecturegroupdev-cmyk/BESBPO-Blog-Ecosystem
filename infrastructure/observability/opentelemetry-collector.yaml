@@ -1,0 +1,173 @@
+# OpenTelemetry Collector Configuration
+# Reference: Master Plan Section 7 - Observability
+# 
+# This collector receives traces, metrics, and logs from all services
+# and exports them to appropriate backends (Jaeger, Prometheus, Loki)
+
+receivers:
+  # OTLP receiver for traces (gRPC)
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  # Prometheus receiver for metrics
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'besbpo-services'
+          scrape_interval: 30s
+          static_configs:
+            - targets:
+                - 'cms-api:8080'
+                - 'syndication-svc:8080'
+                - 'intelligence-svc:8080'
+                - 'search-media-svc:8080'
+          relabel_configs:
+            - source_labels: [__address__]
+              target_label: service
+
+  # Syslog receiver for structured logs
+  syslog:
+    tcp:
+      listen_address: "0.0.0.0:5451"
+      protocol: rfc5424
+
+processors:
+  # Batch processor for efficiency
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+
+  # Memory limiter
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+  # Resource processor - adds service metadata
+  resource:
+    attributes:
+      - action: upsert
+        key: deployment.environment
+        value: ${DEPLOYMENT_ENV:staging}
+      - action: upsert
+        key: service.namespace
+        value: besbpo
+
+  # Filter out noise
+  filter:
+    traces:
+      error_mode: ignore
+    metrics:
+      error_mode: ignore
+    logs:
+      error_mode: ignore
+
+  # Transform processor for log formatting
+  transform:
+    traces:
+      error_mode: ignore
+      trace_statements:
+        - context: span
+          statements:
+            - replace_pattern(attributes["http.url"], "https?://", "")
+            - truncate_all(attributes, 1000)
+    logs:
+      error_mode: ignore
+      log_statements:
+        - context: resource
+          statements:
+            - replace_pattern(attributes["service.name"], "besbpo-", "")
+
+exporters:
+  # Jaeger exporter for traces
+  jaeger:
+    endpoint: jaeger-collector:14250
+    tls:
+      insecure: true
+    sending_queue:
+      num_consumers: 4
+      queue_size: 1000
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 10s
+      max_elapsed_time: 30s
+
+  # Prometheus exporter for metrics
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    namespace: besbpo
+    const_labels:
+      environment: ${DEPLOYMENT_ENV:staging}
+    resource_to_telemetry_conversion:
+      enabled: true
+
+  # Loki exporter for logs
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 30s
+      max_elapsed_time: 2m
+    sending_queue:
+      num_consumers: 4
+      queue_size: 1000
+
+  # Debug exporter (disable in production)
+  debug:
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
+
+extensions:
+  # Health check extension
+  health_check:
+    endpoint: 0.0.0.0:13133
+    check_collector_interval: 5s
+    initial_delay: 1s
+
+  # PProf extension for profiling
+  pprof:
+    endpoint: 0.0.0.0:1777
+
+  # zPages extension for debugging
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, pprof, zpages]
+  
+  pipelines:
+    # Traces pipeline
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [jaeger, debug]
+    
+    # Metrics pipeline
+    metrics:
+      receivers: [prometheus]
+      processors: [memory_limiter, resource, batch]
+      exporters: [prometheus]
+    
+    # Logs pipeline
+    logs:
+      receivers: [syslog]
+      processors: [memory_limiter, resource, transform, batch]
+      exporters: [loki, debug]
+
+  telemetry:
+    logs:
+      level: info
+      development: false
+      encoding: json
+    metrics:
+      address: 0.0.0.0:8888
+    traces:
+      sampler: parentbased_trace_id_ratio
+      argument: "0.1"

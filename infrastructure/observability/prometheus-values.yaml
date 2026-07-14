@@ -1,0 +1,151 @@
+# Prometheus Configuration for BESBPO Blog Platform
+# Reference: Master Plan Section 7 - Observability
+
+# Prometheus Operator Helm Values
+
+prometheus:
+  enabled: true
+  
+  # Prometheus configuration
+  prometheusSpec:
+    # Retention period
+    retention: 15d
+    retentionSize: 50GB
+    
+    # Resource limits
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    
+    # Scrape interval
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+    
+    # Service account
+    serviceAccountName: prometheus
+    
+    # Pod monitoring
+    podMonitorSelector:
+      matchLabels:
+        team: besbpo
+    
+    # Rule selector
+    ruleSelector:
+      matchLabels:
+        role: besbpo-alert-rules
+    
+    # Storage
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          resources:
+            requests:
+              storage: 50Gi
+    
+    # Remote write (optional - for long-term storage)
+    remoteWrite:
+      - url: https://prometheus-remote-write.grafana.net/api/v1/write
+        basicAuth:
+          username:
+            name: grafana-credentials
+            key: username
+          password:
+            name: grafana-credentials
+            key: password
+        queueConfig:
+          maxSamplesPerSend: 10000
+          batchSendDeadline: 30s
+
+# Alertmanager configuration
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          resources:
+            requests:
+              storage: 10Gi
+
+# Grafana sidecar for dashboards
+grafana:
+  enabled: true
+  
+  adminPassword: "" # Use secret
+  
+  # Persistence
+  persistence:
+    enabled: true
+    storageClassName: gp3
+    size: 20Gi
+  
+  # Dashboards
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'besbpo'
+          folder: 'BESBPO'
+          type: file
+          options:
+            path: /var/lib/grafana/dashboards/besbpo
+  
+  # Dashboards ConfigMap
+  dashboards:
+    default:
+      cluster-overview:
+        gnetId: 7249
+        revision: 2
+        datasource: Prometheus
+      kubernetes-cluster:
+        gnetId: 7248
+        revision: 2
+        datasource: Prometheus
+      kubernetes-pods:
+        gnetId: 7247
+        revision: 2
+        datasource: Prometheus
+  
+  # Additional dashboards via ConfigMap
+  dashboardsConfigMaps:
+    - configMap: besbpo-grafana-dashboards
+      key: besbpo-dashboard.json
+  
+  # Ingress
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.besbpo.co.za
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.besbpo.co.za
+
+# Kube-state-metrics
+kube-state-metrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Node Exporter
+node-exporter:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
