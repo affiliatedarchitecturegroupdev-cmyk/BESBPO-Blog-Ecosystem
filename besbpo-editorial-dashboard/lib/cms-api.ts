@@ -59,6 +59,8 @@ export type PaginatedMediaAssets = {
   items: MediaAsset[];
   total: number;
   hasMore: boolean;
+  limit?: number;
+  offset?: number;
 };
 
 export type DeleteMediaResult = 
