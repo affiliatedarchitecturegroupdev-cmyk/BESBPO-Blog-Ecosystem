@@ -228,11 +228,12 @@ export async function listArticles(params?: { status?: string; division?: string
   } catch (error) {
     console.warn('Failed to fetch articles from API, using fixture data:', error);
     let fixtures = getFixtureArticles();
-    if (params?.status) {
-      fixtures = fixtures.filter(a => a.status === params.status);
+    const { status, division } = params ?? {};
+    if (status) {
+      fixtures = fixtures.filter(a => a.status === status);
     }
-    if (params?.division) {
-      fixtures = fixtures.filter(a => a.divisionTags.includes(params.division));
+    if (division) {
+      fixtures = fixtures.filter(a => a.divisionTags.includes(division));
     }
     return {
       articles: fixtures,
