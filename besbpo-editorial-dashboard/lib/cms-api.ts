@@ -1,4 +1,5 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const CMS_API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.CMS_API_BASE_URL;
+const API_BASE_URL = CMS_API_BASE_URL || 'http://localhost:3001';
 
 interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -9,7 +10,7 @@ interface ApiOptions {
 }
 
 // Re-export article status and types
-export type { ArticleStatus, ArticleSourceFields, ContentFieldSource } from './article-status';
+export type { ArticleStatus, ArticleSourceFields, ContentFieldSource } from './article-status.ts';
 export {
   ARTICLE_STATUS_TRANSITIONS,
   HUMAN_APPROVAL_REQUIRED_BEFORE,
@@ -17,7 +18,7 @@ export {
   statusLabel,
   unapprovedFields,
   blockedByApprovalGate,
-} from './article-status';
+} from './article-status.ts';
 
 export type MutationResult = {
   ok: boolean;
@@ -153,6 +154,11 @@ export interface CreateAuthorDto {
 }
 
 async function apiCall<T = unknown>(endpoint: string, options: ApiOptions = {}): Promise<T> {
+  // Check if CMS_API_BASE_URL is configured
+  if (!CMS_API_BASE_URL) {
+    throw new Error('CMS API is not configured (CMS_API_BASE_URL or NEXT_PUBLIC_API_URL not set)');
+  }
+
   const { method = 'GET', body, headers = {}, requiresAuth = true, token } = options;
 
   const defaultHeaders: Record<string, string> = {
@@ -221,9 +227,16 @@ export async function listArticles(params?: { status?: string; division?: string
     return { articles: result.data, total: result.total, source: 'api' as const };
   } catch (error) {
     console.warn('Failed to fetch articles from API, using fixture data:', error);
+    let fixtures = getFixtureArticles();
+    if (params?.status) {
+      fixtures = fixtures.filter(a => a.status === params.status);
+    }
+    if (params?.division) {
+      fixtures = fixtures.filter(a => a.divisionTags.includes(params.division));
+    }
     return {
-      articles: getFixtureArticles(),
-      total: 3,
+      articles: fixtures,
+      total: fixtures.length,
       source: 'fixture' as const,
       error: error instanceof Error ? error.message : 'Unknown error'
     };
@@ -311,6 +324,9 @@ export async function getMediaAsset(id: string, _sessionToken?: string | null) {
 }
 
 export async function uploadMedia(formData: FormData, token?: string | null): Promise<UploadResult> {
+  if (!CMS_API_BASE_URL) {
+    return { ok: false, error: 'CMS API is not configured (CMS_API_BASE_URL or NEXT_PUBLIC_API_URL not set)' };
+  }
   try {
     const response = await fetch(`${API_BASE_URL}/media`, {
       method: 'POST',
@@ -329,6 +345,16 @@ export async function uploadMedia(formData: FormData, token?: string | null): Pr
 }
 
 export async function listMedia(limit?: number, offset?: number, token?: string | null): Promise<PaginatedMediaAssets> {
+  if (!CMS_API_BASE_URL) {
+    // Return empty fixture data when not configured
+    return {
+      items: [],
+      total: 0,
+      hasMore: false,
+      limit,
+      offset,
+    };
+  }
   const params = new URLSearchParams();
   if (limit) params.set('limit', String(limit));
   if (offset) params.set('offset', String(offset));
