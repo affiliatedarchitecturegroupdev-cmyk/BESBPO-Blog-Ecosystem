@@ -44,7 +44,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3001
       DATABASE_URL: postgresql://postgres:postgres@db:5432/besbpo
       DATABASE_HOST: db
@@ -64,10 +64,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    volumes:
-      - ./besbpo-blog-cms-api:/app
-      - /app/node_modules
-    command: npm run start:dev
 
   # Editorial Dashboard - Next.js server (on port 3000)
   editorial-dashboard:

@@ -64,7 +64,7 @@ export class Article {
   })
   tags: Tag[];
 
-  @Column({ name: 'hero_image_id', nullable: true })
+  @Column({ name: 'hero_image_id', type: 'uuid', nullable: true })
   heroImageId?: string | null;
 
   @Column({ name: 'seo_meta', type: 'jsonb', default: {} })

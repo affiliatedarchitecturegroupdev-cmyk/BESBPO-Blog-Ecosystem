@@ -1,8 +1,9 @@
 // Structured Logger for BESBPO Blog Platform
 // Reference: Master Plan Section 7 - Observability
-// 
+//
 // Provides consistent, structured logging across all services
-// Outputs JSON format for easy parsing by log aggregators
+
+import { Request, Response, NextFunction } from 'express';
 
 export enum LogLevel {
   DEBUG = 'debug',
@@ -12,41 +13,21 @@ export enum LogLevel {
 }
 
 export interface LogContext {
-  // Standard fields
   timestamp: string;
   level: LogLevel;
   message: string;
-  
-  // Service context
   service: string;
   version: string;
   environment: string;
-  
-  // Request context (set by middleware)
   requestId?: string;
   userId?: string;
-  sessionId?: string;
-  ip?: string;
-  userAgent?: string;
-  
-  // HTTP context
   method?: string;
   path?: string;
   statusCode?: number;
   durationMs?: number;
-  
-  // Resource context
-  resourceType?: string;
-  resourceId?: string;
-  
-  // Error context
-  error?: {
-    name: string;
-    message: string;
-    stack?: string;
-  };
-  
-  // Additional metadata
+  ip?: string;
+  userAgent?: string;
+  error?: { name: string; message: string; stack?: string };
   [key: string]: unknown;
 }
 
@@ -58,17 +39,7 @@ export interface LoggerOptions {
   redactKeys?: string[];
 }
 
-const DEFAULT_REDACT_KEYS = [
-  'password',
-  'token',
-  'secret',
-  'authorization',
-  'cookie',
-  'x-api-key',
-  'apiKey',
-  'accessToken',
-  'refreshToken',
-];
+const DEFAULT_REDACT_KEYS = ['password', 'token', 'secret', 'authorization', 'cookie', 'x-api-key', 'apiKey', 'accessToken', 'refreshToken'];
 
 export class StructuredLogger {
   private service: string;
@@ -89,41 +60,28 @@ export class StructuredLogger {
     this.version = options.version;
     this.environment = options.environment || 'development';
     this.minLevel = options.minLevel || LogLevel.INFO;
-    this.redactKeys = new Set([
-      ...DEFAULT_REDACT_KEYS,
-      ...(options.redactKeys || []),
-    ]);
+    this.redactKeys = new Set([...DEFAULT_REDACT_KEYS, ...(options.redactKeys || [])]);
   }
 
   private shouldLog(level: LogLevel): boolean {
-    return (
-      StructuredLogger.levelPriority[level] >=
-      StructuredLogger.levelPriority[this.minLevel]
-    );
+    return StructuredLogger.levelPriority[level] >= StructuredLogger.levelPriority[this.minLevel];
   }
 
-  private redact(value: unknown, key?: string): unknown {
-    if (key && this.redactKeys.has(key.toLowerCase())) {
+  private redactValue(value: unknown): unknown {
+    if (typeof value === 'string' && this.redactKeys.has(value.toLowerCase())) {
       return '[REDACTED]';
     }
-    if (typeof value === 'object' && value !== null) {
-      if (Array.isArray(value)) {
-        return value.map((item) => this.redact(item));
-      }
-      const redacted: Record<string, unknown> = {};
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      const result: Record<string, unknown> = {};
       for (const [k, v] of Object.entries(value)) {
-        redacted[k] = this.redact(v, k);
+        result[k] = this.redactValue(v);
       }
-      return redacted;
+      return result;
     }
     return value;
   }
 
-  private formatLog(
-    level: LogLevel,
-    message: string,
-    context: Partial<LogContext> = {}
-  ): LogContext {
+  private formatLog(level: LogLevel, message: string, context: Partial<LogContext> = {}): LogContext {
     return {
       timestamp: new Date().toISOString(),
       level,
@@ -131,146 +89,75 @@ export class StructuredLogger {
       service: this.service,
       version: this.version,
       environment: this.environment,
-      ...this.redact(context),
-    } as LogContext;
+      ...this.redactValue(context) as Partial<LogContext>,
+    };
   }
 
   private output(log: LogContext): void {
-    // Console output in development
     if (this.environment === 'development') {
-      const { level, message, ...meta } = log;
-      const color = {
-        debug: '\x1b[36m',   // cyan
-        info: '\x1b[32m',   // green
-        warn: '\x1b[33m',   // yellow
-        error: '\x1b[31m',  // red
-      }[level] || '\x1b[0m';
-      
-      console.log(
-        `${color}[${log.level.toUpperCase()}]${'\x1b[0m'} ${log.message}`,
-        Object.keys(meta).length > 4 ? meta : ''
-      );
-    }
-
-    // JSON output for production (sent to log aggregator)
-    if (this.environment === 'production') {
+      const color = { debug: '\x1b[36m', info: '\x1b[32m', warn: '\x1b[33m', error: '\x1b[31m' }[log.level] || '\x1b[0m';
+      console.log(`${color}[${log.level.toUpperCase()}]${'\x1b[0m'} ${log.message}`);
+    } else {
       console.log(JSON.stringify(log));
     }
   }
 
   debug(message: string, context?: Partial<LogContext>): void {
-    if (!this.shouldLog(LogLevel.DEBUG)) return;
-    this.output(this.formatLog(LogLevel.DEBUG, message, context));
+    if (this.shouldLog(LogLevel.DEBUG)) this.output(this.formatLog(LogLevel.DEBUG, message, context));
   }
 
   info(message: string, context?: Partial<LogContext>): void {
-    if (!this.shouldLog(LogLevel.INFO)) return;
-    this.output(this.formatLog(LogLevel.INFO, message, context));
+    if (this.shouldLog(LogLevel.INFO)) this.output(this.formatLog(LogLevel.INFO, message, context));
   }
 
   warn(message: string, context?: Partial<LogContext>): void {
-    if (!this.shouldLog(LogLevel.WARN)) return;
-    this.output(this.formatLog(LogLevel.WARN, message, context));
+    if (this.shouldLog(LogLevel.WARN)) this.output(this.formatLog(LogLevel.WARN, message, context));
   }
 
-  error(message: string, error?: Error, context?: Partial<LogContext>): void {
-    if (!this.shouldLog(LogLevel.ERROR)) return;
-    
-    const errorContext: Partial<LogContext> = error
-      ? {
-          error: {
-            name: error.name,
-            message: error.message,
-            stack: error.stack,
-          },
-        }
-      : {};
-
-    this.output(this.formatLog(LogLevel.ERROR, message, { ...context, ...errorContext }));
+  error(message: string, context?: Partial<LogContext>): void {
+    if (this.shouldLog(LogLevel.ERROR)) this.output(this.formatLog(LogLevel.ERROR, message, context));
   }
 
-  // Request logging helper
-  logRequest(req: {
-    method: string;
-    path: string;
-    ip?: string;
-    headers?: Record<string, string>;
-  }, res: {
-    statusCode: number;
-  }, durationMs: number, requestId: string): void {
-    this.info('HTTP Request', {
+  logRequest(req: Request, res: Response, durationMs: number, requestId: string): void {
+    const context: Partial<LogContext> = {
       requestId,
       method: req.method,
       path: req.path,
-      ip: req.ip,
-      userAgent: req.headers?.['user-agent'],
       statusCode: res.statusCode,
       durationMs,
-    });
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+    };
+    const level = res.statusCode >= 500 ? LogLevel.ERROR : res.statusCode >= 400 ? LogLevel.WARN : LogLevel.INFO;
+    this.output(this.formatLog(level, `${req.method} ${req.path}`, context));
   }
 
-  // Child logger with additional context
-  child(additionalContext: Record<string, unknown>): ChildLogger {
-    return new ChildLogger(this, additionalContext);
-  }
-}
-
-export class ChildLogger {
-  private parent: StructuredLogger;
-  private context: Record<string, unknown>;
-
-  constructor(parent: StructuredLogger, context: Record<string, unknown>) {
-    this.parent = parent;
-    this.context = context;
-  }
-
-  debug(message: string, context?: Partial<LogContext>): void {
-    this.parent.debug(message, { ...this.context, ...context });
-  }
-
-  info(message: string, context?: Partial<LogContext>): void {
-    this.parent.info(message, { ...this.context, ...context });
-  }
-
-  warn(message: string, context?: Partial<LogContext>): void {
-    this.parent.warn(message, { ...this.context, ...context });
-  }
-
-  error(message: string, error?: Error, context?: Partial<LogContext>): void {
-    this.parent.error(message, error, { ...this.context, ...context });
+  child(additionalContext: Partial<LogContext>): { debug: (msg: string, ctx?: Partial<LogContext>) => void; info: (msg: string, ctx?: Partial<LogContext>) => void; warn: (msg: string, ctx?: Partial<LogContext>) => void; error: (msg: string, ctx?: Partial<LogContext>) => void } {
+    const parent = this;
+    return {
+      debug(msg: string, ctx?: Partial<LogContext>) { parent.debug(msg, { ...additionalContext, ...ctx }); },
+      info(msg: string, ctx?: Partial<LogContext>) { parent.info(msg, { ...additionalContext, ...ctx }); },
+      warn(msg: string, ctx?: Partial<LogContext>) { parent.warn(msg, { ...additionalContext, ...ctx }); },
+      error(msg: string, ctx?: Partial<LogContext>) { parent.error(msg, { ...additionalContext, ...ctx }); },
+    };
   }
 }
 
-// Factory function for creating loggers
-export function createLogger(options: LoggerOptions): StructuredLogger {
-  return new StructuredLogger(options);
-}
-
-// Default logger instance (can be overridden)
 export const logger = new StructuredLogger({
-  service: process.env.SERVICE_NAME || 'cms-api',
-  version: process.env.SERVICE_VERSION || '1.0.0',
+  service: 'cms-api',
+  version: '1.0.0',
   environment: process.env.NODE_ENV || 'development',
-  minLevel: process.env.LOG_LEVEL as LogLevel || LogLevel.INFO,
 });
 
-// Express middleware for request logging
-export function requestLoggerMiddleware(
-  req: { method: string; path: string; ip?: string; headers: Record<string, string> },
-  res: { statusCode: number },
-  next: () => void
-): void {
-  const requestId = req.headers['x-request-id'] as string || generateRequestId();
+export function requestLoggingMiddleware(req: Request, res: Response, next: NextFunction): void {
+  const requestId = (req.headers['x-request-id'] as string) || `req_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   const start = Date.now();
-
-  res.on('finish', () => {
+  res.setHeader('x-request-id', requestId);
+  
+  res.on('finish', function() {
     const durationMs = Date.now() - start;
     logger.logRequest(req, res, durationMs, requestId);
   });
-
+  
   next();
-}
-
-function generateRequestId(): string {
-  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
