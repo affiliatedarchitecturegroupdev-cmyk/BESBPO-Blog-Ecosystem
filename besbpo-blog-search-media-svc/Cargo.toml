@@ -25,6 +25,15 @@ description = "Search index and media transcoding pipeline for the Besbpo Group 
 # cost of a small amount of manual parsing this service already owns.
 postgres = "0.19"
 
+# Phase 6: Image processing for media transcoding
+# Using the `image` crate for resizing and format conversion
+image = "0.25"
+
+# Phase 6: AWS S3 integration for media uploads
+# Using AWS SDK for Rust (S3 specific)
+aws-config = "1.1"
+aws-sdk-s3 = "1.11"
+
 [[bin]]
 name = "search-media-svc"
 path = "src/main.rs"
