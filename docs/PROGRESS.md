@@ -10,7 +10,7 @@ Phase 4: Editorial Dashboard       [██████████] 100% ✅
 Phase 5: Auth & Enterprise         [██████████] 100% ✅
 Phase 6: Media & Search            [██████████] 100% ✅
 Phase 7: Observability             [██████████] 100% ✅
-Phase 8: Subsidiary Sites          [██░░░░░░░░] 15%
+Phase 8: Subsidiary Sites          [██████████] 100% ✅
 Phase 9: Audit Trail              [██████████] 100% ✅ (Phase 5)
 Phase 10: GitHub Hardening         [██████████] 100% ✅ (Phase 1)
 ```
@@ -451,6 +451,47 @@ Phase 10: GitHub Hardening         [██████████] 100% ✅ (Ph
 - `besbpo-blog-cms-api/src/common/*`
 - `docs/OBSERVABILITY_SETUP.md`
 - `docs/PHASE7_COMPLETE.md`
+
+---
+
+## Phase 8: Subsidiary Site Expansion - COMPLETED ✅
+
+**Date Completed:** 2026-07-13
+
+### Tasks Completed
+
+| Task | Description | LOC Added |
+|------|-------------|-----------|
+| 8.1 | Scaffolding Automation | ~180 |
+| 8.2 | Enhanced Template | ~465 |
+| 8.3 | New Subsidiary Sites | ~250 |
+| **Total** | | **~895** |
+
+### Deliverables
+
+#### Scaffolding Automation
+- **scaffold.sh**: Automated site generation CLI
+- Features: Interactive prompts, placeholder replacement
+- Supports: subdomain, division, locale configuration
+
+#### Enhanced Template
+- **index.html**: Responsive hero, nav, articles section
+- **style.css**: Full styling with CSS variables
+- **config.json**: Theme and feature configuration
+
+#### New Sites Created
+| Site | Subdomain | Division |
+|------|-----------|----------|
+| Smart Cities | smart-cities.besbpo.co.za | smart-cities |
+| Infrastructure | infrastructure.besbpo.co.za | infrastructure |
+| Sustainability | sustainability.besbpo.co.za | sustainability |
+
+### Files Created/Modified
+- `scripts/subsidiary-sites/scaffold.sh`
+- `besbpo-subsidiary-site-template/*`
+- `besbpo-subsidiary-site-*/` (3 new sites)
+- `docs/SUBSIDIARY_SITES.md`
+- `docs/PHASE8_COMPLETE.md`
 
 ---
 
